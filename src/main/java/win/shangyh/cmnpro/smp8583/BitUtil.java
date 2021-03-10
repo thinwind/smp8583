@@ -65,7 +65,7 @@ public final class BitUtil {
     }
 
     public static void main(String[] args) {
-        byte[] bytes = new byte[Integer.MAX_VALUE/2];
+        byte[] bytes = new byte[Integer.MAX_VALUE/4];
         fill(bytes);
         int c = 0;
         long s1 = System.nanoTime();
