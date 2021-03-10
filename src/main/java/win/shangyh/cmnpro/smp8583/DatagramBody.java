@@ -17,6 +17,8 @@ package win.shangyh.cmnpro.smp8583;
 
 import java.util.Arrays;
 
+import win.shangyh.cmnpro.smp8583.factory.BodyFieldFactory;
+
 /**
  *
  * 报文体
@@ -64,11 +66,6 @@ public class DatagramBody {
      */
     private final static int BYTE_LENGTH = 8;
 
-    /**
-     * 解析域过程游标
-     */
-    // private int fieldCursor;
-
     private BodyField[] fields;
 
     public static DatagramBody fromBytes(byte[] source, int offset) {
@@ -82,7 +79,6 @@ public class DatagramBody {
         parseBody(source);
     }
 
-    //TODO
     private void parseBody(byte[] source) {
         //为了防止第一个bitmap的标识位的影响，把标识位暂时置空
         //由于bitmap已经初始化完成，此操作并不会有任何影响

@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package win.shangyh.cmnpro.smp8583;
+package win.shangyh.cmnpro.smp8583.factory;
+
+import win.shangyh.cmnpro.smp8583.BodyField;
 
 /**
  *
- * TODO BodyFieldFactory说明
+ * TODO BodyFieldTemplate说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-03  17:04
+ * @since 2021-02-03  22:19
  *
  */
-public class BodyFieldFactory {
+public interface BodyFieldWorker {
 
-    public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
-        return null;
-    }
-    
+    public BodyField createField(byte[] source, int bodyOffset, int bodyFieldIdx);
+
 }

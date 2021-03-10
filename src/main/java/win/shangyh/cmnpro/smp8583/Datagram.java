@@ -34,7 +34,7 @@ public class Datagram {
     //mti长度
     private final static int MTI_LENGTH=4;
     
-    public static final String CHARSET = "ASCII";
+    private static final String CHARSET = "ASCII";
     
     private String mti;
 
