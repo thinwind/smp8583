@@ -30,10 +30,12 @@ import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
  * @since 2021-02-04  09:56
  *
  */
-public abstract class FixedLengthFieldWorker implements BodyFieldWorker {
+public class FixedLengthFieldWorker implements BodyFieldWorker {
 
     protected final int length;
 
+    private final BodyFieldType fieldType;
+    
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         BodyField field = new BodyField();
@@ -51,23 +53,20 @@ public abstract class FixedLengthFieldWorker implements BodyFieldWorker {
 
         //处理成符合规范长度的值
         if (ascii.length() < length) {
-            ascii = normalize(ascii);
+            ascii = fieldType.normalize(ascii,length);
         }
 
         BodyField field = new BodyField();
         field.setLocationIdx(bodyFieldIdx);
         field.setOrigin(BitUtil.toByteArray(ascii));
-        field.setFieldType(getFieldType());
+        field.setFieldType(fieldType);
         
         return field;
     }
 
-    protected abstract String normalize(String ascii);
-    
-    protected abstract BodyFieldType getFieldType();
-
-    public FixedLengthFieldWorker(int length) {
+    public FixedLengthFieldWorker(int length,BodyFieldType fieldType) {
         this.length = length;
+        this.fieldType = fieldType;
     }
 
 }

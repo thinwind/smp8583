@@ -21,20 +21,39 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import win.shangyh.cmnpro.smp8583.BodyField;
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
 
 /**
  *
- * TODO CharFixedLengthFieldWorkerTest说明
+ * TODO NumberFixedLengthFieldWorkerTest说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  11:26
+ * @since 2021-02-04  11:14
  *
  */
-public class CharFixedLengthFieldWorkerTest {
+public class FixedLengthFieldWorkerTest {
     
     @Test
-    public void testCreateField(){
-        CharFixedLengthFieldWorker worker = new CharFixedLengthFieldWorker(9);
+    public void testCreateNumberField(){
+        FixedLengthFieldWorker worker = new FixedLengthFieldWorker(6,BodyFieldType.NUMBER);
+        String ascii = "1234";
+        BodyField bodyField = worker.createField(ascii, 3);
+        assertEquals("001234", bodyField.toString());
+        byte[] bytes = new byte[6];
+        bytes[0] = (byte)'0';
+        bytes[1] = (byte)'0';
+        bytes[2] = (byte)'1';
+        bytes[3] = (byte)'2';
+        bytes[4] = (byte)'3';
+        bytes[5] = (byte)'4';
+        assertArrayEquals(bytes, bodyField.getOrigin());
+        assertEquals(3, bodyField.getLocationIdx());
+        assertEquals(6, bodyField.getTotalLength());
+    }
+    
+    @Test
+    public void testCreateCharField(){
+        FixedLengthFieldWorker worker = new FixedLengthFieldWorker(9,BodyFieldType.CHARACTOR);
         String ascii = "abcd";
         BodyField bodyField = worker.createField(ascii, 117);
         assertEquals("abcd     ", bodyField.toString());

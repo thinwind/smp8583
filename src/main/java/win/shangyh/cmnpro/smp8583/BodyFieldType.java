@@ -25,26 +25,62 @@ package win.shangyh.cmnpro.smp8583;
  */
 public enum BodyFieldType {
     NUMBER {
+        private static final char PADDING_CHAR = '0';
+
         @Override
         public String defaultString(byte[] data) {
             return BitUtil.toAsciiString(data);
+        }
+
+        @Override
+        public String normalize(String ascii, int length) {
+            if (ascii == null || (ascii.length() >= length)) {
+                return ascii;
+            }
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length - ascii.length(); i++) {
+                builder.append(PADDING_CHAR);
+            }
+            builder.append(ascii);
+            return builder.toString();
         }
     },
     CHARACTOR {
+
+        private static final char PADDING_CHAR = ' ';
+
         @Override
         public String defaultString(byte[] data) {
             return BitUtil.toAsciiString(data);
         }
-    }, BINARY {
+
+        @Override
+        public String normalize(String ascii, int length) {
+            if (ascii == null || (ascii.length() >= length)) {
+                return String.valueOf(ascii);
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.append(ascii);
+            for (int i = 0; i < length - ascii.length(); i++) {
+                builder.append(PADDING_CHAR);
+            }
+            return builder.toString();
+        }
+    },
+    BINARY {
         @Override
         public String defaultString(byte[] data) {
             return BitUtil.toHexString(data);
         }
-    };
 
-    
+        @Override
+        public String normalize(String ascii, int length) {
+            return String.valueOf(ascii);
+        }
+    };
 
     public abstract String defaultString(byte[] data);
 
-    
+    public abstract String normalize(String ascii, int length);
+
 }
