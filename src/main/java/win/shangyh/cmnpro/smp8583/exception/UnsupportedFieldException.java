@@ -25,6 +25,8 @@ package win.shangyh.cmnpro.smp8583.exception;
  */
 public class UnsupportedFieldException extends RuntimeException {
     
+    private static final long serialVersionUID = -6955746821106200754L;
+
     public UnsupportedFieldException(int fieldIdx){
         this(String.format("Unsupported Field: [ %d ]", fieldIdx));
     }
@@ -85,5 +87,4 @@ public class UnsupportedFieldException extends RuntimeException {
         super(cause);
     }
 
-    private static final long serialVersionUID = -5365630128856068164L;
 }
