@@ -20,54 +20,42 @@ import java.util.Arrays;
 import win.shangyh.cmnpro.smp8583.BitUtil;
 import win.shangyh.cmnpro.smp8583.BodyField;
 import win.shangyh.cmnpro.smp8583.BodyFieldType;
-import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
 
 /**
  *
- * 生产固定长度域的打工人
+ * TODO VariableLengthFieldWorker说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  09:56
+ * @since 2021-02-04  12:07
  *
  */
-public abstract class FixedLengthFieldWorker implements BodyFieldWorker {
+public class VariableLengthFieldWorker implements BodyFieldWorker {
 
-    protected final int length;
+    private final int lengthFieldSize;
+    
+    private final BodyFieldType fieldType;
+
+    public VariableLengthFieldWorker(int lengthFieldSize,BodyFieldType fieldType) {
+        this.lengthFieldSize = lengthFieldSize;
+        this.fieldType=fieldType;
+    }
 
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         BodyField field = new BodyField();
         field.setLocationIdx(bodyFieldIdx);
-        byte[] fieldDg = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
-        field.setOrigin(fieldDg);
+        field.setFieldType(fieldType);
+        String lengthStr = BitUtil.toAsciiString(source, bodyOffset, bodyOffset + lengthFieldSize);
+        int fieldSize = Integer.parseInt(lengthStr);
+        byte[] data = Arrays.copyOfRange(source, bodyOffset, bodyOffset + lengthFieldSize + fieldSize);
+        field.setOrigin(data);
         return field;
     }
 
     @Override
     public BodyField createField(String ascii, int bodyFieldIdx) {
-        if (ascii.length() > length) {
-            throw new IllegalLengthException(String.format("The value of the field [%s] has a larger length [%d] than expected([%d]).", ascii, ascii.length(), length));
-        }
-
-        //处理成符合规范长度的值
-        if (ascii.length() < length) {
-            ascii = normalize(ascii);
-        }
-
-        BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
-        field.setOrigin(BitUtil.toByteArray(ascii));
-        field.setFieldType(getFieldType());
-        
-        return field;
-    }
-
-    protected abstract String normalize(String ascii);
-    
-    protected abstract BodyFieldType getFieldType();
-
-    public FixedLengthFieldWorker(int length) {
-        this.length = length;
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

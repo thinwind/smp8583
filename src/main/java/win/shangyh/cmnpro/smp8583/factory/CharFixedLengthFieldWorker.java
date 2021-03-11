@@ -15,24 +15,37 @@
  */
 package win.shangyh.cmnpro.smp8583.factory;
 
-import java.nio.charset.Charset;
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
 
 /**
  *
- * 使用ASCII编码的基类
+ * 字符型固定长度域
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  10:07
+ * @since 2021-02-04  11:23
  *
  */
-public abstract class BaseBodyFieldWorker implements BodyFieldWorker {
-    public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
+public class CharFixedLengthFieldWorker extends FixedLengthFieldWorker {
+
+    private static final char PADDING_CHAR = ' ';
     
-    protected static String toAscii(byte[] data){
-        return new String(data,ASCII_CHARSET);
+    public CharFixedLengthFieldWorker(int length) {
+        super(length);
+    }
+
+    @Override
+    protected String normalize(String ascii) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ascii);
+        for (int i = 0; i < length - ascii.length(); i++) {
+            builder.append(PADDING_CHAR);
+        }
+        return builder.toString();
+    }
+
+    @Override
+    protected BodyFieldType getFieldType() {
+        return BodyFieldType.CHARACTOR;
     }
     
-    protected static byte[] toByteArray(String asciiStr){
-        return asciiStr.getBytes(ASCII_CHARSET);
-    }
 }

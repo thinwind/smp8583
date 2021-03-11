@@ -15,9 +15,11 @@
  */
 package win.shangyh.cmnpro.smp8583.factory;
 
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
+
 /**
  *
- * TODO NumberFixedLengthFieldWorker说明
+ * 数字型固定长度域
  *
  * @author Shang Yehua <niceshang@outlook.com>
  * @since 2021-02-04  10:58
@@ -26,7 +28,7 @@ package win.shangyh.cmnpro.smp8583.factory;
 public class NumberFixedLengthFieldWorker extends FixedLengthFieldWorker {
 
     private static final char PADDING_CHAR = '0';
-
+    
     public NumberFixedLengthFieldWorker(int length) {
         super(length);
     }
@@ -42,6 +44,11 @@ public class NumberFixedLengthFieldWorker extends FixedLengthFieldWorker {
         }
         builder.append(ascii);
         return builder.toString();
+    }
+
+    @Override
+    protected BodyFieldType getFieldType() {
+        return BodyFieldType.NUMBER;
     }
 
 }

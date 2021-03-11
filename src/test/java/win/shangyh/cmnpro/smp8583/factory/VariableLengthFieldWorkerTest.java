@@ -17,36 +17,37 @@ package win.shangyh.cmnpro.smp8583.factory;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
 import win.shangyh.cmnpro.smp8583.BodyField;
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
 
 /**
  *
- * TODO NumberFixedLengthFieldWorkerTest说明
+ * TODO VariableLengthFieldWorkerTest说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  11:14
+ * @since 2021-02-04  13:42
  *
  */
-public class NumberFixedLengthFieldWorkerTest {
-    
+public class VariableLengthFieldWorkerTest {
+
     @Test
-    public void testCreateField(){
-        NumberFixedLengthFieldWorker worker = new NumberFixedLengthFieldWorker(6);
-        String ascii = "1234";
-        BodyField bodyField = worker.createField(ascii, 3);
-        assertEquals("001234", bodyField.toString());
-        byte[] bytes = new byte[6];
-        bytes[0] = (byte)'0';
-        bytes[1] = (byte)'0';
-        bytes[2] = (byte)'1';
-        bytes[3] = (byte)'2';
-        bytes[4] = (byte)'3';
-        bytes[5] = (byte)'4';
-        assertArrayEquals(bytes, bodyField.getOrigin());
-        assertEquals(3, bodyField.getLocationIdx());
-        assertEquals(6, bodyField.getTotalLength());
+    public void testParse() {
+        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2,BodyFieldType.CHARACTOR);
+        byte[] data = new byte[10];
+        data[0] = '0';
+        data[1] = '8';
+        for(int i=2;i<data.length;i++){
+            data[i] =(byte) ((int)'a'+i);
+        }
+        BodyField field = worker.parseField(data, 0, 19);
+        assertEquals(19, field.getLocationIdx());
+        assertEquals(10, field.getTotalLength());
+        assertEquals("08cdefghij", field.toString());
+        assertArrayEquals(data, field.getOrigin());
+        assertFalse(data == field.getOrigin());
     }
 }

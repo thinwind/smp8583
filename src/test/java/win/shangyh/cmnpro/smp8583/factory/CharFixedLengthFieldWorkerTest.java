@@ -24,29 +24,32 @@ import win.shangyh.cmnpro.smp8583.BodyField;
 
 /**
  *
- * TODO NumberFixedLengthFieldWorkerTest说明
+ * TODO CharFixedLengthFieldWorkerTest说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  11:14
+ * @since 2021-02-04  11:26
  *
  */
-public class NumberFixedLengthFieldWorkerTest {
+public class CharFixedLengthFieldWorkerTest {
     
     @Test
     public void testCreateField(){
-        NumberFixedLengthFieldWorker worker = new NumberFixedLengthFieldWorker(6);
-        String ascii = "1234";
-        BodyField bodyField = worker.createField(ascii, 3);
-        assertEquals("001234", bodyField.toString());
-        byte[] bytes = new byte[6];
-        bytes[0] = (byte)'0';
-        bytes[1] = (byte)'0';
-        bytes[2] = (byte)'1';
-        bytes[3] = (byte)'2';
-        bytes[4] = (byte)'3';
-        bytes[5] = (byte)'4';
+        CharFixedLengthFieldWorker worker = new CharFixedLengthFieldWorker(9);
+        String ascii = "abcd";
+        BodyField bodyField = worker.createField(ascii, 117);
+        assertEquals("abcd     ", bodyField.toString());
+        byte[] bytes = new byte[9];
+        bytes[0] = (byte)'a';
+        bytes[1] = (byte)'b';
+        bytes[2] = (byte)'c';
+        bytes[3] = (byte)'d';
+        bytes[4] = (byte)' ';
+        bytes[5] = (byte)' ';
+        bytes[6] = (byte)' ';
+        bytes[7] = (byte)' ';
+        bytes[8] = (byte)' ';
         assertArrayEquals(bytes, bodyField.getOrigin());
-        assertEquals(3, bodyField.getLocationIdx());
-        assertEquals(6, bodyField.getTotalLength());
+        assertEquals(117, bodyField.getLocationIdx());
+        assertEquals(9, bodyField.getTotalLength());
     }
 }

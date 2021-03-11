@@ -9,21 +9,21 @@ public class BodyField {
     
     private int locationIdx;
     
-    private String asciiStr;
-    
     private byte[] origin;
+    
+    private BodyFieldType fieldType;
     
     public int getTotalLength(){
         return origin.length;
     }
     
-    public String asAscii(){
-        return asciiStr;
-    }
-    
     @Override
     public String toString(){
-        return asciiStr;
+        return fieldType.defaultString(origin);
+    }
+    
+    public String toHexString(){
+        return BitUtil.toHexString(origin);
     }
     
 }

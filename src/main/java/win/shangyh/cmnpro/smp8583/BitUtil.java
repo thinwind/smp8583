@@ -15,7 +15,7 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
-import java.util.Random;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -30,71 +30,25 @@ public final class BitUtil {
     private BitUtil() {
     }
 
-    /**
-     * 计算一个byte中包含1的个数
-     * 
-     * {@Link https://zh.wikipedia.org/wiki/%E6%B1%89%E6%98%8E%E9%87%8D%E9%87%8F}
-     * {@Link https://en.wikipedia.org/wiki/Hamming_weightF}
-     * @see Integer#bitCount(int)
-     * @param b 要计算的byte的数值
-     * @return byte包含的1的个数
-     */
-    public static int bitCount(byte b) {
-        int i = b & 0xff;
-        i = i - ((i >>> 1) & 0x55);
-        i = (i & 0x33) + ((i >>> 2) & 0x33);
-        return (i & 0x0f) + ((i >>> 4) & 0x0f);
+    public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
+    
+    public static String toAsciiString(byte[] data) {
+        return new String(data, ASCII_CHARSET);
+    }
+    
+    public static String toAsciiString(byte[] data,int start,int length) {
+        return new String(data,start,length,ASCII_CHARSET);
     }
 
-    /**
-     * 计算一个byte数组中所有的1的个数
-     * 
-     * @param bytes 要计算的数组
-     * @return byte数组中所有的1的个数
-     */
-    public static int bitCount(byte[] bytes) {
-        int cnt = 0;
-        int i;
-        for (int s = 0; s < bytes.length; s++) {
-            i = bytes[s] & 0xff;
-            i = i - ((i >>> 1) & 0x55);
-            i = (i & 0x33) + ((i >>> 2) & 0x33);
-            cnt += (i & 0x0f) + ((i >>> 4) & 0x0f);
+    public static String toHexString(byte[] data) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            builder.append(data[i] & 0xff);
         }
-        return cnt;
+        return builder.toString();
     }
-
-    public static void main(String[] args) {
-        byte[] bytes = new byte[Integer.MAX_VALUE/4];
-        fill(bytes);
-        int c = 0;
-        long s1 = System.nanoTime();
-        int n = bitCount(bytes);
-        long s2 = System.nanoTime();
-        for (byte b : bytes) {
-            c += Integer.bitCount(b & 0xff);
-        }
-        long s3 = System.nanoTime();
-        System.out.println((c - n) + ":\t" + (s2 - s1)/1000000 + "\t" + (s3 - s2)/1000000);
-        // for(int i=1;i<=Byte.MAX_VALUE;i++){
-        //     byte[] bytes=new byte[i];
-        //     fill(bytes);
-        //     int c = 0;
-        //     long s1 = System.nanoTime();
-        //     for (byte b : bytes) {
-        //         c+= Integer.bitCount(b);
-        //     }
-        //     long s2 = System.nanoTime();
-        //     int n = bitCount(bytes);
-        //     long s3 = System.nanoTime();
-        //     System.out.println(c+":"+n+"\t"+(c-n));
-        // }
-    }
-
-    private static void fill(byte[] bytes) {
-        Random random = new Random();
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) random.nextInt(10000);
-        }
+    
+    public static byte[] toByteArray(String asciiStr){
+        return asciiStr.getBytes(ASCII_CHARSET);
     }
 }
