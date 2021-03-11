@@ -15,31 +15,33 @@
  */
 package win.shangyh.cmnpro.smp8583.factory;
 
-import win.shangyh.cmnpro.smp8583.BodyField;
-import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
-
 /**
  *
- * 域构造工厂
+ * TODO NumberFixedLengthFieldWorker说明
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-03  17:04
+ * @since 2021-02-04  10:58
  *
  */
-public class BodyFieldFactory {
+public class NumberFixedLengthFieldWorker extends FixedLengthFieldWorker {
 
-    private BodyFieldFactory() {
+    private static final char PADDING_CHAR = '0';
+
+    public NumberFixedLengthFieldWorker(int length) {
+        super(length);
     }
 
-    //不知疲倦的劳工们
-    private final static BodyFieldWorker[] INDEFATIGABLE_STAFF = new BodyFieldWorker[128];
-
-    public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
-        BodyFieldWorker worker = INDEFATIGABLE_STAFF[bodyFieldIdx - 1];
-        if (worker == null) {
-            throw new UnsupportedFieldException(bodyFieldIdx);
+    /**
+     * 此方法仅在ascii长度小于length时调用
+     */
+    @Override
+    protected String normalize(String ascii) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length - ascii.length(); i++) {
+            builder.append(PADDING_CHAR);
         }
-        return worker.parseField(source, bodyOffset, bodyFieldIdx);
+        builder.append(ascii);
+        return builder.toString();
     }
 
 }

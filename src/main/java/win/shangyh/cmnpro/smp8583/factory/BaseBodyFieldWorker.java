@@ -15,31 +15,24 @@
  */
 package win.shangyh.cmnpro.smp8583.factory;
 
-import win.shangyh.cmnpro.smp8583.BodyField;
-import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
+import java.nio.charset.Charset;
 
 /**
  *
- * 域构造工厂
+ * 使用ASCII编码的基类
  *
  * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-03  17:04
+ * @since 2021-02-04  10:07
  *
  */
-public class BodyFieldFactory {
-
-    private BodyFieldFactory() {
+public abstract class BaseBodyFieldWorker implements BodyFieldWorker {
+    public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
+    
+    protected static String toAscii(byte[] data){
+        return new String(data,ASCII_CHARSET);
     }
-
-    //不知疲倦的劳工们
-    private final static BodyFieldWorker[] INDEFATIGABLE_STAFF = new BodyFieldWorker[128];
-
-    public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
-        BodyFieldWorker worker = INDEFATIGABLE_STAFF[bodyFieldIdx - 1];
-        if (worker == null) {
-            throw new UnsupportedFieldException(bodyFieldIdx);
-        }
-        return worker.parseField(source, bodyOffset, bodyFieldIdx);
+    
+    protected static byte[] toByteArray(String asciiStr){
+        return asciiStr.getBytes(ASCII_CHARSET);
     }
-
 }
