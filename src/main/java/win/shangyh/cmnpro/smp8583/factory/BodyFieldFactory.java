@@ -15,8 +15,13 @@
  */
 package win.shangyh.cmnpro.smp8583.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import win.shangyh.cmnpro.smp8583.BodyField;
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
 import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
+import static win.shangyh.cmnpro.smp8583.BodyFieldType.*;
 
 /**
  *
@@ -32,14 +37,56 @@ public class BodyFieldFactory {
     }
 
     //不知疲倦的劳工们
-    private final static BodyFieldWorker[] INDEFATIGABLE_STAFF = new BodyFieldWorker[128];
+    private final static BodyFieldWorker[] INDEFATIGABLE_STAFF;
+
+    static {
+        INDEFATIGABLE_STAFF = new BodyFieldWorker[128];
+        employ();
+    }
 
     public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
-        BodyFieldWorker worker = INDEFATIGABLE_STAFF[bodyFieldIdx - 1];
+        return INDEFATIGABLE_STAFF[bodyFieldIdx - 1].parseField(source, bodyOffset, bodyFieldIdx);
+    }
+
+    private static void employ() {
+        Map<String, BodyFieldWorker> classRoom = new HashMap<>();
+
+        //域1 不存在
+        INDEFATIGABLE_STAFF[0] = FakeWorker.INSTANCE;
+        
+        //域2
+        INDEFATIGABLE_STAFF[1] = trainVariableWorker(2, NUMBER, classRoom);
+
+        //域3
+        INDEFATIGABLE_STAFF[2] = trainFixedWorker(6, NUMBER, classRoom);
+        
+        //域4
+        INDEFATIGABLE_STAFF[3] = trainFixedWorker(12, NUMBER, classRoom);
+        
+        //域5
+        
+    }
+
+    private static BodyFieldWorker trainFixedWorker(int length, BodyFieldType type,
+            Map<String, BodyFieldWorker> classRoom) {
+        String key = "f" + length + type.toString();
+        BodyFieldWorker worker = classRoom.get(key);
         if (worker == null) {
-            throw new UnsupportedFieldException(bodyFieldIdx);
+            worker = new FixedLengthFieldWorker(length, type);
+            classRoom.put(key, worker);
         }
-        return worker.parseField(source, bodyOffset, bodyFieldIdx);
+        return worker;
+    }
+
+    private static BodyFieldWorker trainVariableWorker(int length, BodyFieldType type,
+            Map<String, BodyFieldWorker> classRoom) {
+        String key = "v" + length + type.toString();
+        BodyFieldWorker worker = classRoom.get(key);
+        if (worker == null) {
+            worker = new VariableLengthFieldWorker(length, type);
+            classRoom.put(key, worker);
+        }
+        return worker;
     }
 
 }
