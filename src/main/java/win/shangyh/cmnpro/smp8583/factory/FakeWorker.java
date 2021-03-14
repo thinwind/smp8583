@@ -44,10 +44,4 @@ public class FakeWorker implements BodyFieldWorker{
         throw new UnsupportedFieldException(bodyFieldIdx);
     }
     
-    public static void main(String[] args) {
-        for(int i=0;i<129;i++){
-            System.out.println("f"+i+"=");
-        }
-    }
-    
 }

@@ -19,7 +19,7 @@ import win.shangyh.cmnpro.smp8583.BodyField;
 
 /**
  *
- * TODO BodyFieldTemplate说明
+ * 解析域的劳动者
  *
  * @author Shang Yehua <niceshang@outlook.com>
  * @since 2021-02-03  22:19

@@ -24,7 +24,8 @@ import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
 
 /**
  *
- * TODO FieldDefine说明
+ * 域定义 
+ * 仅用于BodyFieldFactory构建
  *
  * @author Shang Yehua <niceshang@outlook.com>
  * @since 2021-03-14  13:58
@@ -90,7 +91,7 @@ public class FieldDefine {
     //-------------------------
     private final Pattern fixedFieldPattern = Pattern.compile("([^\\d]+)(\\d+)");
 
-    public FieldDefine(String defineStr) {
+    FieldDefine(String defineStr) {
         this.defineStr = defineStr;
         Matcher matcher = variableFieldPattern.matcher(defineStr);
         if (matcher.matches()) {
@@ -124,9 +125,13 @@ public class FieldDefine {
         hasZ = type.contains("Z") || type.contains("z");
     }
 
-    public BodyFieldType getFieldType() {
-        if (hasA || hasS || hasX || hasZ) {
-            return BodyFieldType.CHARACTOR;
+    BodyFieldType getFieldType() {
+        if (hasA || hasS || hasX) {
+            if (hasLowerB || hasZ) {
+                return BodyFieldType.BYTES;
+            } else {
+                return BodyFieldType.CHARACTOR;
+            }
         }
         if (hasLowerB) {
             return BodyFieldType.BINARY;
@@ -140,20 +145,20 @@ public class FieldDefine {
         throw new UnsupportedFieldException(defineStr);
     }
 
-    public BodyFieldWorker newBodyFieldWorker() {
+    BodyFieldWorker newBodyFieldWorker() {
         if (isFixed) {
             return new FixedLengthFieldWorker(length, getFieldType());
         } else {
             return new VariableLengthFieldWorker(length, getFieldType());
         }
     }
-    
+
     //just for init
     //do not use for other purposes
-    String cacheKey(){
-        if(isFixed){
+    String cacheKey() {
+        if (isFixed) {
             return "f" + length + getFieldType().toString();
-        }else{
+        } else {
             return "v" + length + getFieldType().toString();
         }
     }
