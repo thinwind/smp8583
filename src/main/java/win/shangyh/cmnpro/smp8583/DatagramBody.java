@@ -59,7 +59,7 @@ public class DatagramBody {
     /**
      * 每个bitmap都是8字节(64位)
      */
-    private final static int BITMAP_SIZE = 8;
+    private final static int SINGLE_BITMAP_SIZE = 8;
 
     /**
      * 每个字节的长度,用于在bitmap中计算域的位置
@@ -84,11 +84,11 @@ public class DatagramBody {
         //由于bitmap已经初始化完成，此操作并不会有任何影响
         byte firstByte = bitmap[0];
         bitmap[0] = (byte) (firstByte & BYTE_LOW_SLOTS);
-        
+
         fields = new BodyField[count(bitmap)];
         //域序号
         int bodyFieldIdx;
-        int fieldCursor=0;
+        int fieldCursor = 0;
 
         for (int i = 0; i < bitmap.length; i++) {
             byte item = bitmap[i];
@@ -97,7 +97,7 @@ public class DatagramBody {
                 bodyFieldIdx = i * BYTE_LENGTH + slotIdx + 1;
                 //判断某一域是否存在
                 if ((item & BYTE_SLOTS[slotIdx]) == BYTE_SLOTS[slotIdx]) {
-                    BodyField field = BodyFieldFactory.parseField(source,bodyOffset,bodyFieldIdx);
+                    BodyField field = BodyFieldFactory.parseField(source, bodyOffset, bodyFieldIdx);
                     fields[fieldCursor++] = field;
                     bodyOffset += field.getTotalLength();
                 }
@@ -111,7 +111,7 @@ public class DatagramBody {
      * 计算一共有多少个域
      * 
      * @param bitmap 位图
-     * @return
+     * @return 位图中1的个数
      */
     private static int count(byte[] bitmap) {
         int cnt = 0;
@@ -127,13 +127,53 @@ public class DatagramBody {
      */
     private void initBitmap(byte[] source, int offset) {
         byte firstByte = source[offset];
-        bodyOffset = offset + BITMAP_SIZE;
+        bodyOffset = offset + SINGLE_BITMAP_SIZE;
         //判断第二位图是否存在
         boolean hasSecondaryBitmap = (firstByte & SECONDARY_BITMAP_FLAG) == SECONDARY_BITMAP_FLAG;
         if (hasSecondaryBitmap) {
-            bodyOffset += BITMAP_SIZE;
+            bodyOffset += SINGLE_BITMAP_SIZE;
         }
         bitmap = Arrays.copyOfRange(source, offset, bodyOffset);
+    }
+
+    public byte[] toBytes(byte[] mti) {
+        int bitmapSize = SINGLE_BITMAP_SIZE * BYTE_LENGTH;
+        boolean hasSecondaryBitmap = false;
+        byte firstByte = 0;
+        int totalBodyLength = 0;
+        for (BodyField field : fields) {
+            totalBodyLength += field.getTotalLength();
+            if (!hasSecondaryBitmap && (field.getLocationIdx() > bitmapSize)) {
+                //如果存在大于一个bitmap的域索引，那么证明第二个bitmap存在
+                bitmapSize += SINGLE_BITMAP_SIZE * BYTE_LENGTH;
+                firstByte = (byte) SECONDARY_BITMAP_FLAG;
+                hasSecondaryBitmap = true;
+            }
+        }
+
+        bitmap = new byte[bitmapSize];
+        bitmap[0] = firstByte;
+
+        int totalLength = mti.length + Datagram.DATAGRAM_LENGTH + totalBodyLength;
+        byte[] datagram = new byte[totalBodyLength];
+        initTotalLength(datagram, totalLength);
+        bodyOffset = Datagram.DATAGRAM_LENGTH;
+        System.arraycopy(mti, 0, datagram, bodyOffset, mti.length);
+        bodyOffset  += mti.length;
+        // copyFields
+        for(BodyField field : fields){
+            System.arraycopy(field.getOrigin(), 0, datagram, bodyOffset, field.getTotalLength());
+            bodyOffset += field.getTotalLength();
+        }
+        return datagram;
+    }
+
+    private void initTotalLength(byte[] datagram, int totalLength) {
+        int mask = 0xff;
+        for (int i = 0; i < Datagram.DATAGRAM_LENGTH; i++) {
+            datagram[i] = (byte) (totalLength & (mask << (8 * (Datagram.DATAGRAM_LENGTH - i - 1))));
+        }
+
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +31,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Datagram {
+
+    public final static int DATAGRAM_LENGTH = 2;
+
     //mti长度
     private final static int MTI_LENGTH = 4;
 
@@ -37,7 +42,11 @@ public class Datagram {
     private DatagramBody body;
 
     public void parse(byte[] source) {
-        mti = BitUtil.toAsciiString(source, 0, MTI_LENGTH);
-        body = DatagramBody.fromBytes(source, MTI_LENGTH);
+        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH, MTI_LENGTH);
+        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH + MTI_LENGTH);
+    }
+
+    public byte[] toBytes() {
+        return body.toBytes(BitUtil.toByteArray(mti));
     }
 }
