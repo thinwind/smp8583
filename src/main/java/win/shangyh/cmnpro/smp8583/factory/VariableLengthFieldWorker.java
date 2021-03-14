@@ -23,7 +23,7 @@ import win.shangyh.cmnpro.smp8583.BodyFieldType;
 
 /**
  *
- * TODO VariableLengthFieldWorker说明
+ * 生产可变长度域的打工人
  *
  * @author Shang Yehua <niceshang@outlook.com>
  * @since 2021-02-04  12:07
