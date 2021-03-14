@@ -17,11 +17,12 @@ package win.shangyh.cmnpro.smp8583.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import win.shangyh.cmnpro.smp8583.BodyField;
-import win.shangyh.cmnpro.smp8583.BodyFieldType;
-import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
-import static win.shangyh.cmnpro.smp8583.BodyFieldType.*;
 
 /**
  *
@@ -33,6 +34,8 @@ import static win.shangyh.cmnpro.smp8583.BodyFieldType.*;
  */
 public class BodyFieldFactory {
 
+    public static final int FIELD_PREFIX_LENGTH = 1;
+
     private BodyFieldFactory() {
     }
 
@@ -41,49 +44,49 @@ public class BodyFieldFactory {
 
     static {
         INDEFATIGABLE_STAFF = new BodyFieldWorker[128];
-        employ();
+        try {
+            //招募打工人
+            employ();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
+    
     public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         return INDEFATIGABLE_STAFF[bodyFieldIdx - 1].parseField(source, bodyOffset, bodyFieldIdx);
     }
 
-    private static void employ() {
+    //只在工厂建厂时招募一次
+    //不用过于考虑效率和内存占用
+    //初始化完成后只留有INDEFATIGABLE_STAFF
+    //其它对象都被回收了
+    private static void employ() throws IOException {
         Map<String, BodyFieldWorker> classRoom = new HashMap<>();
-
-        //域1 不存在
-        INDEFATIGABLE_STAFF[0] = FakeWorker.INSTANCE;
-        
-        //域2
-        INDEFATIGABLE_STAFF[1] = trainVariableWorker(2, NUMBER, classRoom);
-
-        //域3
-        INDEFATIGABLE_STAFF[2] = trainFixedWorker(6, NUMBER, classRoom);
-        
-        //域4
-        INDEFATIGABLE_STAFF[3] = trainFixedWorker(12, NUMBER, classRoom);
-        
-        //域5
-        
-    }
-
-    private static BodyFieldWorker trainFixedWorker(int length, BodyFieldType type,
-            Map<String, BodyFieldWorker> classRoom) {
-        String key = "f" + length + type.toString();
-        BodyFieldWorker worker = classRoom.get(key);
-        if (worker == null) {
-            worker = new FixedLengthFieldWorker(length, type);
-            classRoom.put(key, worker);
+        try (InputStream fieldList = BodyFieldFactory.class.getResourceAsStream("/field-list.properties")) {
+            Properties fieldListProp = new Properties();
+            fieldListProp.load(fieldList);
+            for (Object key : fieldListProp.keySet()) {
+                String keystr = key.toString();
+                int idx = Integer.parseInt(keystr.substring(FIELD_PREFIX_LENGTH));
+                String value = fieldListProp.getProperty(keystr).trim();
+                if (value.isEmpty()) {
+                    //空岗位，加个冒名领工资的
+                    INDEFATIGABLE_STAFF[idx-1] = FakeWorker.INSTANCE;
+                } else {
+                    FieldDefine define = new FieldDefine(value);
+                    INDEFATIGABLE_STAFF[idx-1] = trainWorker(define, classRoom);
+                }
+            }
         }
-        return worker;
+
     }
 
-    private static BodyFieldWorker trainVariableWorker(int length, BodyFieldType type,
-            Map<String, BodyFieldWorker> classRoom) {
-        String key = "v" + length + type.toString();
+    //入职培训
+    private static BodyFieldWorker trainWorker(FieldDefine define, Map<String, BodyFieldWorker> classRoom) {
+        String key = define.cacheKey();
         BodyFieldWorker worker = classRoom.get(key);
         if (worker == null) {
-            worker = new VariableLengthFieldWorker(length, type);
+            worker = define.newBodyFieldWorker();
             classRoom.put(key, worker);
         }
         return worker;

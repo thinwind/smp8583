@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
+import win.shangyh.cmnpro.smp8583.BodyFieldType;
 import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldException;
 
 /**
@@ -69,17 +70,21 @@ public class FieldDefine {
 
     //变长域的模式，比如 ansb...512(LLLVAR)
     //匹配模式为:
-    //--------------------------------------------------------------
-    //|    ansb   |    ...    |   512    | ( |    LLL    | VAR | ) |
-    //--------------------------------------------------------------
-    //|  group(1) |  group(2) | group(3) |   |  group(4) |     |   |
-    //--------------------------------------------------------------
+    //---------------------------------------------------------------
+    //|   ansb   |    ...    |   512    |  (  |    LLL    | VAR | ) |
+    //---------------------------------------------------------------
+    //|  [^\\.]+ |    \\.+   |   \\d+   | \\( |     L+    | VAR | ) |
+    //---------------------------------------------------------------
+    //| group(1) |  group(2) | group(3) |     |  group(4) |     |   |
+    //---------------------------------------------------------------
     private final Pattern variableFieldPattern = Pattern.compile("([^\\.]+)(\\.+)(\\d+)\\((L+)VAR\\)");
 
     //定长的域模式，比如 an12
     //匹配模式为:
     //-------------------------
     //|     ans   |     12    |
+    //-------------------------
+    //|  [^\\d]+  |    \\d+   |
     //-------------------------
     //|  group(1) |  group(2) |
     //-------------------------
@@ -116,7 +121,41 @@ public class FieldDefine {
         hasUpperB = type.contains("B");
         hasN = !isCn && type.contains("n");
         hasX = type.contains("X");
-        hasZ = type.contains("Z");
+        hasZ = type.contains("Z") || type.contains("z");
+    }
+
+    public BodyFieldType getFieldType() {
+        if (hasA || hasS || hasX || hasZ) {
+            return BodyFieldType.CHARACTOR;
+        }
+        if (hasLowerB) {
+            return BodyFieldType.BINARY;
+        }
+        if (hasUpperB) {
+            return BodyFieldType.BYTES;
+        }
+        if (hasN) {
+            return BodyFieldType.NUMBER;
+        }
+        throw new UnsupportedFieldException(defineStr);
+    }
+
+    public BodyFieldWorker newBodyFieldWorker() {
+        if (isFixed) {
+            return new FixedLengthFieldWorker(length, getFieldType());
+        } else {
+            return new VariableLengthFieldWorker(length, getFieldType());
+        }
+    }
+    
+    //just for init
+    //do not use for other purposes
+    String cacheKey(){
+        if(isFixed){
+            return "f" + length + getFieldType().toString();
+        }else{
+            return "v" + length + getFieldType().toString();
+        }
     }
 
 }

@@ -67,6 +67,17 @@ public enum BodyFieldType {
             return builder.toString();
         }
     },
+    BYTES{
+        @Override
+        public String defaultString(byte[] data) {
+            return BitUtil.toHexString(data);
+        }
+
+        @Override
+        public String normalize(String ascii, int length) {
+            return String.valueOf(ascii);
+        }
+    },
     BINARY {
         @Override
         public String defaultString(byte[] data) {
