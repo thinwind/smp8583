@@ -32,12 +32,12 @@ import win.shangyh.cmnpro.smp8583.BodyFieldType;
 public class VariableLengthFieldWorker implements BodyFieldWorker {
 
     private final int lengthFieldSize;
-    
+
     private final BodyFieldType fieldType;
 
-    public VariableLengthFieldWorker(int lengthFieldSize,BodyFieldType fieldType) {
+    public VariableLengthFieldWorker(int lengthFieldSize, BodyFieldType fieldType) {
         this.lengthFieldSize = lengthFieldSize;
-        this.fieldType=fieldType;
+        this.fieldType = fieldType;
     }
 
     @Override
@@ -54,8 +54,23 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
 
     @Override
     public BodyField createField(String ascii, int bodyFieldIdx) {
-        // TODO Auto-generated method stub
-        return null;
+        byte[] body = BitUtil.toByteArray(ascii);
+        return createField(body, bodyFieldIdx);
+    }
+
+    @Override
+    public BodyField createField(byte[] body, int bodyFieldIdx) {
+        BodyField field = new BodyField();
+        field.setLocationIdx(bodyFieldIdx);
+        field.setFieldType(fieldType);
+
+        byte[] lengthField = BitUtil.splitInt(body.length, lengthFieldSize);
+        byte[] bodyData = new byte[lengthFieldSize + body.length];
+        System.arraycopy(lengthField, 0, bodyData, 0, lengthFieldSize);
+        System.arraycopy(body, 0, bodyData, lengthFieldSize, body.length);
+        field.setOrigin(bodyData);
+
+        return field;
     }
 
 }

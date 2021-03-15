@@ -49,4 +49,18 @@ public interface BodyFieldWorker {
      * @return 生成的符合规范的域
      */
     BodyField createField(String ascii,int bodyFieldIdx);
+
+    /**
+     * 从字节数组创建一个域
+     * 
+     * 注意：值可能是原始值，需要进行补全
+     * 按照8583规范，对于固定长度的报文域有以下填充规则:
+     *     1. 如果是数字域，右靠齐，左边多余位填零
+     *     2. 如果不是数字域，左靠齐，右边多余位填空格
+     * 
+     * @param data 原始域值
+     * @param bodyFieldIdx 域序号 (按照8583规范，从1开始计数)
+     * @return 生成的符合规范的域
+     */
+    BodyField createField(byte[] data,int bodyFieldIdx);
 }

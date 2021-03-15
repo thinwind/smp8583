@@ -173,7 +173,6 @@ public class DatagramBody {
         for (int i = 0; i < Datagram.DATAGRAM_LENGTH; i++) {
             datagram[i] = (byte) (totalLength & (mask << (8 * (Datagram.DATAGRAM_LENGTH - i - 1))));
         }
-
     }
 
 }

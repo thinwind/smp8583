@@ -69,4 +69,29 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
         this.fieldType = fieldType;
     }
 
+    @Override
+    public BodyField createField(byte[] data, int bodyFieldIdx) {
+        if(data.length > length){
+            throw new IllegalLengthException(String.format("The value of the field has a larger length [%d] than expected([%d]).", data.length, length));
+        }
+        
+        BodyField field = new BodyField();
+        field.setLocationIdx(bodyFieldIdx);
+        field.setFieldType(fieldType);
+        if(data.length == length){
+            field.setOrigin(data);
+            return field;
+        }
+        
+        // to here , data.length < length
+        byte[] targetData = new byte[length];
+        for (int i = 0; i < length - data.length; i++) {
+            targetData[i] = fieldType.filledByte();
+        }
+        System.arraycopy(data, 0, targetData, length, data.length);
+        field.setOrigin(targetData);
+        
+        return field;
+    }
+
 }

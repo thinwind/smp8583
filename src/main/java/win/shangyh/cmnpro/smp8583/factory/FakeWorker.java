@@ -43,5 +43,11 @@ public class FakeWorker implements BodyFieldWorker{
         //Oops! You get the wrong guy, I just do nothing but complains.
         throw new UnsupportedFieldException(bodyFieldIdx);
     }
+
+    @Override
+    public BodyField createField(byte[] data, int bodyFieldIdx) {
+        //Oops! You get the wrong guy, I just do nothing but complains.
+        throw new UnsupportedFieldException(bodyFieldIdx);
+    }
     
 }
