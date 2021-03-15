@@ -15,8 +15,6 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
-import java.util.Arrays;
-
 import lombok.Getter;
 import lombok.Setter;
 
