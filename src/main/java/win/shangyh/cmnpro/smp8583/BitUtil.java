@@ -31,13 +31,31 @@ public final class BitUtil {
     }
 
     public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
-    
+
+    /**
+     * 把一个数值使用ASCII码的字节数组表示
+     * 
+     * @param value 要拆分的数值
+     * @param size 要拆分的字节个数
+     * @return 拆分后的数组
+     */
+    public static byte[] splitInt(int value, int size) {
+        String valStr = String.valueOf(value);
+        if (valStr.length() > size) {
+            throw new RuntimeException(String.format("数值[%s]的长度超过了字节数[%d]", valStr, size));
+        }
+        for (int i = 0; i < size - valStr.length(); i++) {
+            valStr = "0" + valStr;
+        }
+        return valStr.getBytes(ASCII_CHARSET);
+    }
+
     public static String toAsciiString(byte[] data) {
         return new String(data, ASCII_CHARSET);
     }
-    
-    public static String toAsciiString(byte[] data,int start,int length) {
-        return new String(data,start,length,ASCII_CHARSET);
+
+    public static String toAsciiString(byte[] data, int start, int length) {
+        return new String(data, start, length, ASCII_CHARSET);
     }
 
     public static String toHexString(byte[] data) {
@@ -47,8 +65,8 @@ public final class BitUtil {
         }
         return builder.toString();
     }
-    
-    public static byte[] toByteArray(String asciiStr){
+
+    public static byte[] toByteArray(String asciiStr) {
         return asciiStr.getBytes(ASCII_CHARSET);
     }
 }

@@ -44,6 +44,11 @@ public enum BodyFieldType {
             builder.append(ascii);
             return builder.toString();
         }
+
+        @Override
+        public byte filledByte() {
+            return PADDING_CHAR;
+        }
     },
     CHARACTOR {
 
@@ -66,6 +71,27 @@ public enum BodyFieldType {
             }
             return builder.toString();
         }
+
+        @Override
+        public byte filledByte() {
+            return PADDING_CHAR;
+        }
+    },
+    BYTES{
+        @Override
+        public String defaultString(byte[] data) {
+            return BitUtil.toHexString(data);
+        }
+
+        @Override
+        public String normalize(String ascii, int length) {
+            return String.valueOf(ascii);
+        }
+
+        @Override
+        public byte filledByte() {
+            return 0;
+        }
     },
     BINARY {
         @Override
@@ -77,10 +103,17 @@ public enum BodyFieldType {
         public String normalize(String ascii, int length) {
             return String.valueOf(ascii);
         }
+
+        @Override
+        public byte filledByte() {
+            return 0;
+        }
     };
 
     public abstract String defaultString(byte[] data);
 
     public abstract String normalize(String ascii, int length);
+    
+    public abstract byte filledByte();
 
 }

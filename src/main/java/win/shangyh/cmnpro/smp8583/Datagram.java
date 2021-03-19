@@ -15,8 +15,6 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
-import java.io.UnsupportedEncodingException;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,22 +29,22 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Datagram {
+
+    public final static int DATAGRAM_LENGTH = 2;
+
     //mti长度
-    private final static int MTI_LENGTH=4;
-    
-    private static final String CHARSET = "ASCII";
-    
+    private final static int MTI_LENGTH = 4;
+
     private String mti;
 
     private DatagramBody body;
-    
-    public void parse(byte[] source){
-        try {
-            mti = new String(source,0,MTI_LENGTH,CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            //只要充分测试，此异常不应该出现
-            throw new RuntimeException(e);
-        }
-        body = DatagramBody.fromBytes(source,MTI_LENGTH);
+
+    public void parse(byte[] source) {
+        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH, MTI_LENGTH);
+        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH + MTI_LENGTH);
+    }
+
+    public byte[] toBytes() {
+        return body.toBytes(BitUtil.toByteArray(mti));
     }
 }
