@@ -36,6 +36,11 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
 
     private final BodyFieldType fieldType;
     
+    public FixedLengthFieldWorker(int length, BodyFieldType fieldType) {
+        this.length = length;
+        this.fieldType = fieldType;
+    }
+
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         BodyField field = new BodyField();
@@ -47,50 +52,22 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
 
     @Override
     public BodyField createField(String ascii, int bodyFieldIdx) {
-        if (ascii.length() > length) {
-            throw new IllegalLengthException(String.format("The value of the field [%s] has a larger length [%d] than expected([%d]).", ascii, ascii.length(), length));
-        }
-
-        //处理成符合规范长度的值
-        if (ascii.length() < length) {
-            ascii = fieldType.normalize(ascii,length);
-        }
-
-        BodyField field = new BodyField();
-        field.setLocation(bodyFieldIdx);
-        field.setOrigin(BitUtil.toByteArray(ascii));
-        field.setFieldType(fieldType);
-        
-        return field;
+        return createField(BitUtil.toByteArray(ascii), bodyFieldIdx);
     }
 
-    public FixedLengthFieldWorker(int length,BodyFieldType fieldType) {
-        this.length = length;
-        this.fieldType = fieldType;
-    }
 
     @Override
     public BodyField createField(byte[] data, int bodyFieldIdx) {
-        if(data.length > length){
-            throw new IllegalLengthException(String.format("The value of the field has a larger length [%d] than expected([%d]).", data.length, length));
+        if (data.length > length) {
+            throw new IllegalLengthException(String.format(
+                    "The value of the field has a larger length [%d] than expected([%d]).", data.length, length));
         }
-        
+
         BodyField field = new BodyField();
         field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
-        if(data.length == length){
-            field.setOrigin(data);
-            return field;
-        }
-        
-        // to here , data.length < length
-        byte[] targetData = new byte[length];
-        for (int i = 0; i < length - data.length; i++) {
-            targetData[i] = fieldType.filledByte();
-        }
-        System.arraycopy(data, 0, targetData, length, data.length);
-        field.setOrigin(targetData);
-        
+        field.setOrigin(fieldType.normalize(data, length));
+
         return field;
     }
 

@@ -15,6 +15,9 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
+import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
+import win.shangyh.cmnpro.smp8583.exception.UnsupportedFieldOprationException;
+
 /**
  *
  * 报文域的类型
@@ -25,95 +28,44 @@ package win.shangyh.cmnpro.smp8583;
  */
 public enum BodyFieldType {
     NUMBER {
-        private static final char PADDING_CHAR = '0';
-
         @Override
-        public String defaultString(byte[] data) {
-            return BitUtil.toAsciiString(data);
-        }
-
-        @Override
-        public String normalize(String ascii, int length) {
-            if (ascii == null || (ascii.length() >= length)) {
-                return ascii;
+        public byte[] normalize(byte[] origin, int length) {
+            int delta = length - origin.length;
+            if (delta < 0) {
+                throw new IllegalLengthException("The input byte array has a larger length than expected.");
             }
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < length - ascii.length(); i++) {
-                builder.append(PADDING_CHAR);
+            if (delta == 0) {
+                return origin;
             }
-            builder.append(ascii);
-            return builder.toString();
-        }
-
-        @Override
-        public byte filledByte() {
-            return PADDING_CHAR;
+            byte[] result = new byte[length];
+            for (int i = 0; i < delta; i++)
+                result[i] = '0';
+            System.arraycopy(origin, 0, result, delta, origin.length);
+            return result;
         }
     },
     CHARACTOR {
 
-        private static final char PADDING_CHAR = ' ';
-
         @Override
-        public String defaultString(byte[] data) {
-            return BitUtil.toAsciiString(data);
-        }
-
-        @Override
-        public String normalize(String ascii, int length) {
-            if (ascii == null || (ascii.length() >= length)) {
-                return String.valueOf(ascii);
+        public byte[] normalize(byte[] origin, int length) {
+            if (origin.length > length) {
+                throw new IllegalLengthException("The input byte array has a larger length than expected.");
             }
-            StringBuilder builder = new StringBuilder();
-            builder.append(ascii);
-            for (int i = 0; i < length - ascii.length(); i++) {
-                builder.append(PADDING_CHAR);
+            if (origin.length == length) {
+                return origin;
             }
-            return builder.toString();
-        }
-
-        @Override
-        public byte filledByte() {
-            return PADDING_CHAR;
+            byte[] r = new byte[length];
+            System.arraycopy(origin, 0, r, 0, origin.length);
+            for (int i = origin.length; i < length; i++) {
+                r[i] = ' ';
+            }
+            return r;
         }
     },
-    BYTES{
-        @Override
-        public String defaultString(byte[] data) {
-            return BitUtil.toHexString(data);
-        }
+    BYTES, BINARY;
 
-        @Override
-        public String normalize(String ascii, int length) {
-            return String.valueOf(ascii);
-        }
-
-        @Override
-        public byte filledByte() {
-            return 0;
-        }
-    },
-    BINARY {
-        @Override
-        public String defaultString(byte[] data) {
-            return BitUtil.toHexString(data);
-        }
-
-        @Override
-        public String normalize(String ascii, int length) {
-            return String.valueOf(ascii);
-        }
-
-        @Override
-        public byte filledByte() {
-            return 0;
-        }
-    };
-
-    public abstract String defaultString(byte[] data);
-
-    public abstract String normalize(String ascii, int length);
-    
-    public abstract byte filledByte();
+    public byte[] normalize(byte[] origin, int length) {
+        throw new UnsupportedFieldOprationException("The field cannot be normalized");
+    }
 
 }

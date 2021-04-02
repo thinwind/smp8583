@@ -34,18 +34,56 @@ import win.shangyh.cmnpro.smp8583.BodyFieldType;
 public class FixedLengthFieldWorkerTest {
     
     @Test
+    public void whenNumberAndLessLengthThenPaddingLeftWithZeros(){
+        FixedLengthFieldWorker worker = new FixedLengthFieldWorker(6,BodyFieldType.NUMBER);
+        byte[] bytes = new byte[4];
+        bytes[0] = '1';
+        bytes[1] = '2';
+        bytes[2] = '3';
+        bytes[3] = '4';
+        BodyField bodyField = worker.createField(bytes, 3);
+        
+        byte[] target = new byte[6];
+        target[0] = '0';
+        target[1] = '0';
+        target[2] = '1';
+        target[3] = '2';
+        target[4] = '3';
+        target[5] = '4';
+        assertArrayEquals(target, bodyField.getOrigin());
+        assertEquals(3, bodyField.getLocation());
+        assertEquals(6, bodyField.getTotalLength());
+    }
+    
+    @Test
+    public void whenNumberAndEqualsLengthThenReturn(){
+        FixedLengthFieldWorker worker = new FixedLengthFieldWorker(4,BodyFieldType.NUMBER);
+        byte[] bytes = new byte[4];
+        bytes[0] = '1';
+        bytes[1] = '2';
+        bytes[2] = '3';
+        bytes[3] = '4';
+        BodyField bodyField = worker.createField(bytes, 3);
+
+        assertArrayEquals(bytes, bodyField.getOrigin());
+        assertEquals(3, bodyField.getLocation());
+        assertEquals(4, bodyField.getTotalLength());
+    }
+    
+    @Test
     public void testCreateNumberField(){
         FixedLengthFieldWorker worker = new FixedLengthFieldWorker(6,BodyFieldType.NUMBER);
         String ascii = "1234";
         BodyField bodyField = worker.createField(ascii, 3);
-        assertEquals("001234", bodyField.toString());
+        
         byte[] bytes = new byte[6];
-        bytes[0] = (byte)'0';
-        bytes[1] = (byte)'0';
-        bytes[2] = (byte)'1';
-        bytes[3] = (byte)'2';
-        bytes[4] = (byte)'3';
-        bytes[5] = (byte)'4';
+        bytes[0] = '0';
+        bytes[1] = '0';
+        bytes[2] = '1';
+        bytes[3] = '2';
+        bytes[4] = '3';
+        bytes[5] = '4';
+        
         assertArrayEquals(bytes, bodyField.getOrigin());
         assertEquals(3, bodyField.getLocation());
         assertEquals(6, bodyField.getTotalLength());
@@ -56,17 +94,16 @@ public class FixedLengthFieldWorkerTest {
         FixedLengthFieldWorker worker = new FixedLengthFieldWorker(9,BodyFieldType.CHARACTOR);
         String ascii = "abcd";
         BodyField bodyField = worker.createField(ascii, 117);
-        assertEquals("abcd     ", bodyField.toString());
         byte[] bytes = new byte[9];
-        bytes[0] = (byte)'a';
-        bytes[1] = (byte)'b';
-        bytes[2] = (byte)'c';
-        bytes[3] = (byte)'d';
-        bytes[4] = (byte)' ';
-        bytes[5] = (byte)' ';
-        bytes[6] = (byte)' ';
-        bytes[7] = (byte)' ';
-        bytes[8] = (byte)' ';
+        bytes[0] = 'a';
+        bytes[1] = 'b';
+        bytes[2] = 'c';
+        bytes[3] = 'd';
+        bytes[4] = ' ';
+        bytes[5] = ' ';
+        bytes[6] = ' ';
+        bytes[7] = ' ';
+        bytes[8] = ' ';
         assertArrayEquals(bytes, bodyField.getOrigin());
         assertEquals(117, bodyField.getLocation());
         assertEquals(9, bodyField.getTotalLength());

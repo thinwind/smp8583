@@ -33,6 +33,8 @@ import win.shangyh.cmnpro.smp8583.BodyFieldType;
  *
  */
 public class VariableLengthFieldWorkerTest {
+    
+    
 
     @Test
     public void testParse() {
@@ -46,7 +48,6 @@ public class VariableLengthFieldWorkerTest {
         BodyField field = worker.parseField(data, 0, 19);
         assertEquals(19, field.getLocation());
         assertEquals(10, field.getTotalLength());
-        assertEquals("08cdefghij", field.toString());
         assertArrayEquals(data, field.getOrigin());
         assertFalse(data == field.getOrigin());
     }
