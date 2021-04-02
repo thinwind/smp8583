@@ -149,7 +149,7 @@ public class FieldDefine {
         if (isFixed) {
             return new FixedLengthFieldWorker(length, getFieldType());
         } else {
-            return new VariableLengthFieldWorker(length, getFieldType());
+            return new VariableLengthFieldWorker(fieldLengthSize,length, getFieldType());
         }
     }
 

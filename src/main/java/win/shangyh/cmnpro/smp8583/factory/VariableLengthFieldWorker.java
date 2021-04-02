@@ -20,6 +20,7 @@ import java.util.Arrays;
 import win.shangyh.cmnpro.smp8583.BitUtil;
 import win.shangyh.cmnpro.smp8583.BodyField;
 import win.shangyh.cmnpro.smp8583.BodyFieldType;
+import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
 
 /**
  *
@@ -35,18 +36,27 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
 
     private final BodyFieldType fieldType;
 
-    public VariableLengthFieldWorker(int lengthFieldSize, BodyFieldType fieldType) {
+    private final int maxLength;
+
+    public VariableLengthFieldWorker(int lengthFieldSize, int maxLength, BodyFieldType fieldType) {
         this.lengthFieldSize = lengthFieldSize;
+        this.maxLength = maxLength;
         this.fieldType = fieldType;
     }
 
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
+        String lengthStr = BitUtil.toAsciiString(source, bodyOffset, bodyOffset + lengthFieldSize);
+        int fieldSize = Integer.parseInt(lengthStr);
+        if (fieldSize > maxLength - lengthFieldSize) {
+            throw new IllegalLengthException(
+                    String.format("The value of the field has a larger length [%d] than the max length([%d]).",
+                            fieldSize, maxLength - lengthFieldSize));
+        }
         BodyField field = new BodyField();
         field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
-        String lengthStr = BitUtil.toAsciiString(source, bodyOffset, bodyOffset + lengthFieldSize);
-        int fieldSize = Integer.parseInt(lengthStr);
+
         byte[] data = Arrays.copyOfRange(source, bodyOffset, bodyOffset + lengthFieldSize + fieldSize);
         field.setOrigin(data);
         return field;
@@ -60,6 +70,11 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
 
     @Override
     public BodyField createField(byte[] body, int bodyFieldIdx) {
+        if (body.length > maxLength) {
+            throw new IllegalLengthException(
+                    String.format("The value of the field has a larger length [%d] than the max length([%d]).",
+                            body.length, maxLength));
+        }
         BodyField field = new BodyField();
         field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
