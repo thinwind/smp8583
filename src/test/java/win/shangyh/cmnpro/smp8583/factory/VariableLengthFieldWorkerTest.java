@@ -35,46 +35,46 @@ import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
  *
  */
 public class VariableLengthFieldWorkerTest {
-    
+
     @Test(expected = IllegalLengthException.class)
-    public void whenLargerLengthThenExcept(){
-        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2,11,BodyFieldType.CHARACTOR);
+    public void whenLargerLengthThenExcept() {
+        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11, BodyFieldType.CHARACTOR);
         byte[] data = new byte[20];
         data[0] = '1';
         data[1] = '8';
-        byte[] origin=new byte[18];
+        byte[] origin = new byte[18];
         for (int i = 2; i < data.length; i++) {
             data[i] = (byte) ((int) 'a' + i);
-            origin[i-2] = data[i];
+            origin[i - 2] = data[i];
         }
         String hexString = BitUtil.toHexString(data);
         BodyField field = worker.createField(origin, 32);
         assertEquals(hexString, field.toHexString());
-        assertEquals(2+origin.length, field.getTotalLength());
+        assertEquals(2 + origin.length, field.getTotalLength());
         assertEquals(32, field.getLocation());
     }
 
     @Test
     public void whenVarThenReturn() {
-        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11,BodyFieldType.CHARACTOR);
+        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11, BodyFieldType.CHARACTOR);
         byte[] data = new byte[10];
         data[0] = '0';
         data[1] = '8';
-        byte[] origin=new byte[8];
+        byte[] origin = new byte[8];
         for (int i = 2; i < data.length; i++) {
             data[i] = (byte) ((int) 'a' + i);
-            origin[i-2] = data[i];
+            origin[i - 2] = data[i];
         }
         String hexString = BitUtil.toHexString(data);
         BodyField field = worker.createField(origin, 32);
         assertEquals(hexString, field.toHexString());
-        assertEquals(2+origin.length, field.getTotalLength());
+        assertEquals(2 + origin.length, field.getTotalLength());
         assertEquals(32, field.getLocation());
     }
 
     @Test
     public void testParse() {
-        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11,BodyFieldType.CHARACTOR);
+        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11, BodyFieldType.CHARACTOR);
         byte[] data = new byte[10];
         data[0] = '0';
         data[1] = '8';
@@ -87,16 +87,16 @@ public class VariableLengthFieldWorkerTest {
         assertArrayEquals(data, field.getOrigin());
         assertFalse(data == field.getOrigin());
     }
-    
+
     @Test(expected = IllegalLengthException.class)
-    public void whenParseAndLargerLengthThenExcept(){
-        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11,BodyFieldType.CHARACTOR);
+    public void whenParseAndLargerLengthThenExcept() {
+        VariableLengthFieldWorker worker = new VariableLengthFieldWorker(2, 11, BodyFieldType.CHARACTOR);
         byte[] data = new byte[20];
         data[0] = '1';
         data[1] = '8';
         for (int i = 2; i < data.length; i++) {
             data[i] = (byte) ((int) 'a' + i);
         }
-        BodyField field = worker.parseField(data, 0, 32);
+        worker.parseField(data, 0, 32);
     }
 }

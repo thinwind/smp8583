@@ -43,6 +43,11 @@ public enum BodyFieldType {
             System.arraycopy(origin, 0, result, delta, origin.length);
             return result;
         }
+
+        @Override
+        public int getByteLength(int lengthInDefination) {
+            return lengthInDefination;
+        }
     },
     CHARACTOR {
 
@@ -61,11 +66,30 @@ public enum BodyFieldType {
             }
             return r;
         }
+        
+        @Override
+        public int getByteLength(int lengthInDefination) {
+            return lengthInDefination;
+        }
     },
-    BYTES, BINARY;
+    BYTES {
+        @Override
+        public int getByteLength(int lengthInDefination) {
+            return lengthInDefination;
+        }
+    }, 
+    BINARY {
+        @Override
+        public int getByteLength(int lengthInDefination) {
+            // lengthInDefination/8
+            return lengthInDefination >>> 3;
+        }
+    };
 
     public byte[] normalize(byte[] origin, int length) {
         throw new UnsupportedFieldOprationException("The field cannot be normalized");
     }
+
+    public abstract int getByteLength(int lengthInDefination);
 
 }

@@ -154,10 +154,10 @@ public class DatagramBody {
         bitmap = new byte[bitmapSize];
         bitmap[0] = firstByte;
 
-        int totalLength = mti.length + Datagram.DATAGRAM_LENGTH + totalBodyLength;
+        int totalLength = mti.length + Datagram.DATAGRAM_LENGTH_FIELD_SIZE + totalBodyLength;
         byte[] datagram = new byte[totalBodyLength];
         initTotalLength(datagram, totalLength);
-        bodyOffset = Datagram.DATAGRAM_LENGTH;
+        bodyOffset = Datagram.DATAGRAM_LENGTH_FIELD_SIZE;
         System.arraycopy(mti, 0, datagram, bodyOffset, mti.length);
         bodyOffset  += mti.length;
         // copyFields
@@ -170,8 +170,8 @@ public class DatagramBody {
 
     private void initTotalLength(byte[] datagram, int totalLength) {
         int mask = 0xff;
-        for (int i = 0; i < Datagram.DATAGRAM_LENGTH; i++) {
-            datagram[i] = (byte) (totalLength & (mask << (8 * (Datagram.DATAGRAM_LENGTH - i - 1))));
+        for (int i = 0; i < Datagram.DATAGRAM_LENGTH_FIELD_SIZE; i++) {
+            datagram[i] = (byte) (totalLength & (mask << (8 * (Datagram.DATAGRAM_LENGTH_FIELD_SIZE - i - 1))));
         }
     }
 

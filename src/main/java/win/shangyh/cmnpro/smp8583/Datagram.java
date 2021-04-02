@@ -30,18 +30,21 @@ import lombok.Setter;
 @Getter
 public class Datagram {
 
-    public final static int DATAGRAM_LENGTH = 2;
+    /**
+     * 报文长度域长度
+     */
+    public final static int DATAGRAM_LENGTH_FIELD_SIZE = 2;
 
     //mti长度
-    private final static int MTI_LENGTH = 4;
+    public final static int MTI_LENGTH = 4;
 
     private String mti;
 
     private DatagramBody body;
 
     public void parse(byte[] source) {
-        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH, MTI_LENGTH);
-        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH + MTI_LENGTH);
+        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH_FIELD_SIZE, MTI_LENGTH);
+        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH_FIELD_SIZE + MTI_LENGTH);
     }
 
     public byte[] toBytes() {

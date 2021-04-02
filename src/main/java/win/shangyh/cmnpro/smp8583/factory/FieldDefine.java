@@ -94,6 +94,7 @@ public class FieldDefine {
     FieldDefine(String defineStr) {
         this.defineStr = defineStr;
         Matcher matcher = variableFieldPattern.matcher(defineStr);
+        int lengthInDefination;
         if (matcher.matches()) {
             isFixed = false;
             int dotCnt = matcher.group(2).length();
@@ -103,7 +104,7 @@ public class FieldDefine {
                 throw new RuntimeException("The define(" + defineStr + ") length not matched!");
             }
             fieldLengthSize = dotCnt;
-            length = Integer.parseInt(matcher.group(3));
+            lengthInDefination = Integer.parseInt(matcher.group(3));
         } else {
             matcher = fixedFieldPattern.matcher(defineStr);
             if (!matcher.matches()) {
@@ -111,7 +112,7 @@ public class FieldDefine {
             }
             isFixed = true;
             fieldLengthSize = 0;
-            length = Integer.parseInt(matcher.group(2));
+            lengthInDefination = Integer.parseInt(matcher.group(2));
         }
 
         String type = matcher.group(1);
@@ -123,6 +124,7 @@ public class FieldDefine {
         hasN = !isCn && type.contains("n");
         hasX = type.contains("X");
         hasZ = type.contains("Z") || type.contains("z");
+        length = getFieldType().getByteLength(lengthInDefination);
     }
 
     BodyFieldType getFieldType() {
