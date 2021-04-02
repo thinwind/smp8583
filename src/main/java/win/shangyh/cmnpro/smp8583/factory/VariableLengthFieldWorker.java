@@ -43,7 +43,7 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
+        field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
         String lengthStr = BitUtil.toAsciiString(source, bodyOffset, bodyOffset + lengthFieldSize);
         int fieldSize = Integer.parseInt(lengthStr);
@@ -61,7 +61,7 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
     @Override
     public BodyField createField(byte[] body, int bodyFieldIdx) {
         BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
+        field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
 
         byte[] lengthField = BitUtil.splitInt(body.length, lengthFieldSize);

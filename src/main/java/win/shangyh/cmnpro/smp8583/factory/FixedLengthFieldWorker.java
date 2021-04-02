@@ -39,7 +39,7 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
+        field.setLocation(bodyFieldIdx);
         byte[] fieldDg = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
         field.setOrigin(fieldDg);
         return field;
@@ -57,7 +57,7 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
         }
 
         BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
+        field.setLocation(bodyFieldIdx);
         field.setOrigin(BitUtil.toByteArray(ascii));
         field.setFieldType(fieldType);
         
@@ -76,7 +76,7 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
         }
         
         BodyField field = new BodyField();
-        field.setLocationIdx(bodyFieldIdx);
+        field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
         if(data.length == length){
             field.setOrigin(data);

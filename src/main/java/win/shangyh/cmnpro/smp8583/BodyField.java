@@ -7,7 +7,10 @@ import lombok.Setter;
 @Getter
 public class BodyField {
     
-    private int locationIdx;
+    /**
+     * 域号，从1开始计数
+     */
+    private int location;
     
     private byte[] origin;
     

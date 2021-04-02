@@ -41,10 +41,12 @@ public final class BitUtil {
      */
     public static byte[] splitInt(int value, int size) {
         String valStr = String.valueOf(value);
-        if (valStr.length() > size) {
-            throw new RuntimeException(String.format("数值[%s]的长度超过了字节数[%d]", valStr, size));
+        int delta = size - valStr.length();
+        if (delta < 0) {
+            throw new RuntimeException(
+                    String.format("The length([%s]) of value is larger than the expected size([%d]).", valStr, size));
         }
-        for (int i = 0; i < size - valStr.length(); i++) {
+        for (int i = 0; i < delta; i++) {
             valStr = "0" + valStr;
         }
         return valStr.getBytes(ASCII_CHARSET);
@@ -61,7 +63,7 @@ public final class BitUtil {
     public static String toHexString(byte[] data) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
-            builder.append(data[i] & 0xff);
+            builder.append(Integer.toHexString(data[i] & 0xff));
         }
         return builder.toString();
     }

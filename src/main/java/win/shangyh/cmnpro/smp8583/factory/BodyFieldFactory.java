@@ -34,6 +34,10 @@ import win.shangyh.cmnpro.smp8583.BodyField;
  */
 public class BodyFieldFactory {
 
+    /**
+     * field-list.properties中域标识的字符的长度
+     * 默认为f，长度为1
+     */
     public static final int FIELD_PREFIX_LENGTH = 1;
 
     private BodyFieldFactory() {
@@ -91,5 +95,6 @@ public class BodyFieldFactory {
         }
         return worker;
     }
-
+    
+    
 }

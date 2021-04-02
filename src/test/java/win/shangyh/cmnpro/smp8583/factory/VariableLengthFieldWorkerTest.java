@@ -44,7 +44,7 @@ public class VariableLengthFieldWorkerTest {
             data[i] =(byte) ((int)'a'+i);
         }
         BodyField field = worker.parseField(data, 0, 19);
-        assertEquals(19, field.getLocationIdx());
+        assertEquals(19, field.getLocation());
         assertEquals(10, field.getTotalLength());
         assertEquals("08cdefghij", field.toString());
         assertArrayEquals(data, field.getOrigin());

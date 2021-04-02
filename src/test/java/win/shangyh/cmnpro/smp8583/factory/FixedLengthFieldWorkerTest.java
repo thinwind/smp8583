@@ -47,7 +47,7 @@ public class FixedLengthFieldWorkerTest {
         bytes[4] = (byte)'3';
         bytes[5] = (byte)'4';
         assertArrayEquals(bytes, bodyField.getOrigin());
-        assertEquals(3, bodyField.getLocationIdx());
+        assertEquals(3, bodyField.getLocation());
         assertEquals(6, bodyField.getTotalLength());
     }
     
@@ -68,7 +68,7 @@ public class FixedLengthFieldWorkerTest {
         bytes[7] = (byte)' ';
         bytes[8] = (byte)' ';
         assertArrayEquals(bytes, bodyField.getOrigin());
-        assertEquals(117, bodyField.getLocationIdx());
+        assertEquals(117, bodyField.getLocation());
         assertEquals(9, bodyField.getTotalLength());
     }
 }

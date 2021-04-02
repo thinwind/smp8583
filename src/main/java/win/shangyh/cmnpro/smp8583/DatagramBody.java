@@ -143,7 +143,7 @@ public class DatagramBody {
         int totalBodyLength = 0;
         for (BodyField field : fields) {
             totalBodyLength += field.getTotalLength();
-            if (!hasSecondaryBitmap && (field.getLocationIdx() > bitmapSize)) {
+            if (!hasSecondaryBitmap && (field.getLocation() > bitmapSize)) {
                 //如果存在大于一个bitmap的域索引，那么证明第二个bitmap存在
                 bitmapSize += SINGLE_BITMAP_SIZE * BYTE_LENGTH;
                 firstByte = (byte) SECONDARY_BITMAP_FLAG;
