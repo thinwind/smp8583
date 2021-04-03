@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package win.shangyh.cmnpro.smp8583.factory;
+package win.shangyh.cmnpro.smp8583;
+
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import win.shangyh.cmnpro.smp8583.BitUtil;
 
 /**
  *
@@ -66,16 +68,85 @@ public class BitUtilTest {
         String expected = " !#$0123@AB^";
         byte[] bytes = new byte[asciiInHex.length() / 2];
         for (int i = 0; i < asciiInHex.length(); i += 2) {
-            bytes[i / 2] = (byte)Integer.parseInt(asciiInHex.substring(i, i+2), 16);
+            bytes[i / 2] = (byte) Integer.parseInt(asciiInHex.substring(i, i + 2), 16);
         }
         assertEquals(expected, BitUtil.toAsciiString(bytes));
     }
-    
+
     @Test
-    public void testToHexString(){
+    public void testToHexString() {
         String asciiInHex = "20212324303132334041425e";
         String str = " !#$0123@AB^";
         byte[] bytes = BitUtil.toByteArray(str);
         assertEquals(asciiInHex, BitUtil.toHexString(bytes));
     }
+
+    @Test
+    public void testBitmapSet() {
+        byte[] bitmap = new byte[8];
+        Set<Integer> pos = new TreeSet<>();
+        Random ran = new Random();
+        for (int i = 0; i < 20; i++) {
+            int p = ran.nextInt(64)+1;
+            pos.add(p);
+            BitUtil.setPos(bitmap, p);
+        }
+        String s = "";
+        for (int i = 1; i < 65; i++) {
+            if (pos.contains(i)) {
+                s += "1";
+            } else {
+                s += "0";
+            }
+        }
+        System.out.println(s);
+        String o = "";
+        for (int i = 0; i < bitmap.length; i++) {
+            o += fill0To8(Integer.toBinaryString(bitmap[i] & 0xff));
+        }
+        System.out.println(o);
+        assertEquals(s, o);
+    }
+    
+    @Test
+    public void testBitmapSet2() {
+        byte[] bitmap = new byte[16];
+        Set<Integer> pos = new TreeSet<>();
+        Random ran = new Random();
+        for (int i = 0; i < 20; i++) {
+            int p = ran.nextInt(64)+1;
+            pos.add(p);
+            BitUtil.setPos(bitmap, p);
+        }
+        
+        for (int i = 0; i < 20; i++) {
+            int p = ran.nextInt(64)+65;
+            pos.add(p);
+            BitUtil.setPos(bitmap, p);
+        }
+        
+        String s = "";
+        for (int i = 1; i < 129; i++) {
+            if (pos.contains(i)) {
+                s += "1";
+            } else {
+                s += "0";
+            }
+        }
+        System.out.println(s);
+        String o = "";
+        for (int i = 0; i < bitmap.length; i++) {
+            o += fill0To8(Integer.toBinaryString(bitmap[i] & 0xff));
+        }
+        System.out.println(o);
+        assertEquals(s, o);
+    }
+
+    private String fill0To8(String binaryString) {
+        for (int i = 0, delta = 8 - binaryString.length(); i < delta; i++) {
+            binaryString = "0" + binaryString;
+        }
+        return binaryString;
+    }
+
 }

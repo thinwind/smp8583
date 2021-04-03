@@ -71,4 +71,17 @@ public final class BitUtil {
     public static byte[] toByteArray(String asciiStr) {
         return asciiStr.getBytes(ASCII_CHARSET);
     }
+
+    /**
+     * 设置bitmap某一位置存在
+     * @param bitmap 要设置的bitmap
+     * @param p 要设置的位置，从1开始计数
+     */
+    public static void setPos(byte[] bitmap, int p) {
+        int idx=p-1;
+        int segment = idx/8;
+        int pos = idx % 8;
+        int mask = 1 << 7;
+        bitmap[segment] = (byte)(bitmap[segment] | (mask >>> pos));
+    }
 }
