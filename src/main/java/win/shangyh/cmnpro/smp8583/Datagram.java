@@ -48,6 +48,6 @@ public class Datagram {
     }
 
     public byte[] toBytes() {
-        return body.toBytes(BitUtil.toByteArray(mti));
+        return body.toBytes();
     }
 }

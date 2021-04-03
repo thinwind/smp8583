@@ -124,6 +124,7 @@ public class FieldDefine {
         hasN = !isCn && type.contains("n");
         hasX = type.contains("X");
         hasZ = type.contains("Z") || type.contains("z");
+        //注意：此方法调用必须在最后，完成类型判断之后才行
         length = getFieldType().getByteLength(lengthInDefination);
     }
 
@@ -144,6 +145,9 @@ public class FieldDefine {
         if (hasN) {
             return BodyFieldType.NUMBER;
         }
+        if(hasZ){
+            return BodyFieldType.BYTES;
+        }
         throw new UnsupportedFieldException(defineStr);
     }
 
@@ -155,7 +159,7 @@ public class FieldDefine {
         }
     }
 
-    //just for init
+    //just for internal init
     //do not use for other purposes
     String cacheKey() {
         if (isFixed) {

@@ -17,6 +17,8 @@ package win.shangyh.cmnpro.smp8583;
 
 import java.util.Arrays;
 
+import lombok.Getter;
+import lombok.Setter;
 import win.shangyh.cmnpro.smp8583.factory.BodyFieldFactory;
 
 /**
@@ -66,6 +68,8 @@ public class DatagramBody {
      */
     private final static int BYTE_LENGTH = 8;
 
+    @Setter
+    @Getter
     private BodyField[] fields;
 
     public static DatagramBody fromBytes(byte[] source, int offset) {
@@ -136,7 +140,8 @@ public class DatagramBody {
         bitmap = Arrays.copyOfRange(source, offset, bodyOffset);
     }
 
-    public byte[] toBytes(byte[] mti) {
+    public byte[] toBytes() {
+        byte[] mti=new byte[4];
         int bitmapSize = SINGLE_BITMAP_SIZE * BYTE_LENGTH;
         boolean hasSecondaryBitmap = false;
         byte firstByte = 0;

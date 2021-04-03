@@ -95,6 +95,9 @@ public class BodyFieldFactory {
         }
         return worker;
     }
-    
+
+    public static BodyField createBodyField(String field, int loc) {
+        return INDEFATIGABLE_STAFF[loc-1].createField(field, loc);
+    }
     
 }
