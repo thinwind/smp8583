@@ -74,11 +74,23 @@ public class BitUtilTest {
     }
 
     @Test
-    public void testToHexString() {
+    public void testAsciiToHexString() {
         String asciiInHex = "20212324303132334041425e";
         String str = " !#$0123@AB^";
         byte[] bytes = BitUtil.toByteArray(str);
         assertEquals(asciiInHex, BitUtil.toHexString(bytes));
+    }
+    
+    @Test
+    public void testToHexStringWithZeros() {
+        byte[] cus=new byte[5];
+        cus[0] = 0x00;
+        cus[1] = 0x01;
+        cus[2] = 0x03;
+        cus[3] = (byte) 0xCA;
+        cus[4] = (byte) 0xFE;
+        String expected = "000103cafe";
+        assertEquals(expected, BitUtil.toHexString(cus));
     }
 
     @Test

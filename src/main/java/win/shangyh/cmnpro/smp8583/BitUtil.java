@@ -63,7 +63,8 @@ public final class BitUtil {
     public static String toHexString(byte[] data) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
-            builder.append(Integer.toHexString(data[i] & 0xff));
+            String hex = Integer.toHexString(data[i] & 0xff);
+            builder.append(hex.length() == 2 ? hex : "0" + hex);
         }
         return builder.toString();
     }
@@ -74,14 +75,20 @@ public final class BitUtil {
 
     /**
      * 设置bitmap某一位置存在
+     * 计算过程如下：
+        //分段按位置计算
+        int idx = p - 1;
+        int segment = idx / 8;
+        int pos = idx % 8;
+        int mask = 1 << 7;
+        bitmap[segment] = (byte) (bitmap[segment] | (mask >>> pos));
+        
+        //下面代码为消除局部变量，减少计算过程的实现
+        
      * @param bitmap 要设置的bitmap
      * @param p 要设置的位置，从1开始计数
      */
     public static void setPos(byte[] bitmap, int p) {
-        int idx=p-1;
-        int segment = idx/8;
-        int pos = idx % 8;
-        int mask = 1 << 7;
-        bitmap[segment] = (byte)(bitmap[segment] | (mask >>> pos));
+        bitmap[(p - 1) / 8] = (byte) (bitmap[(p - 1) / 8] | (1 << (7 - ((p - 1) % 8))));
     }
 }
