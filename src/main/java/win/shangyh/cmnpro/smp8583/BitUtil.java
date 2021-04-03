@@ -77,14 +77,12 @@ public final class BitUtil {
      * 设置bitmap某一位置存在
      * 计算过程如下：
         //分段按位置计算
+        //下面代码为消除局部变量，减少计算过程的实现
         int idx = p - 1;
         int segment = idx / 8;
         int pos = idx % 8;
-        int mask = 1 << 7;
+        int mask = 1 << 7; //1000 0000
         bitmap[segment] = (byte) (bitmap[segment] | (mask >>> pos));
-        
-        //下面代码为消除局部变量，减少计算过程的实现
-        
      * @param bitmap 要设置的bitmap
      * @param p 要设置的位置，从1开始计数
      */
