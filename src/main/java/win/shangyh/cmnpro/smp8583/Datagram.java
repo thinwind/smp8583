@@ -15,47 +15,31 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  *
  * 8583报文对象
+ * 不带任何header
  *
  * @author Shang Yehua <niceshang@outlook.com>
  * @since 2021-02-03  13:51
  *
  */
-@Setter
-@Getter
-public class Datagram {
+public class Datagram extends AbstractDatagram {
 
-    /**
-     * 报文长度域长度
-     */
-    public final static int DATAGRAM_LENGTH_FIELD_SIZE = 2;
-
-    //mti长度
-    public final static int MTI_LENGTH = 4;
-
-    private String mti;
-
-    private DatagramBody body;
-
-    public void parse(byte[] source) {
-        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH_FIELD_SIZE, MTI_LENGTH);
-        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH_FIELD_SIZE + MTI_LENGTH);
+    @Override
+    protected void parseHeader(byte[] source) {
+        //just do nothin
     }
 
-    public byte[] toBytes() {
-        byte[] datagram = body.toBytes(DATAGRAM_LENGTH_FIELD_SIZE + MTI_LENGTH);
-        
-        byte[] lengthBytes = BitUtil.splitIntInBytes(datagram.length, DATAGRAM_LENGTH_FIELD_SIZE);
-        System.arraycopy(lengthBytes, 0, datagram, 0, DATAGRAM_LENGTH_FIELD_SIZE);
-        
-        byte[] mtiBytes = BitUtil.toByteArray(mti);
-        System.arraycopy(mtiBytes, 0, datagram, DATAGRAM_LENGTH_FIELD_SIZE, mtiBytes.length);
-        
-        return datagram;
+    @Override
+    public int getHeaderLength() {
+        //no header
+        return 0;
     }
+
+    @Override
+    protected void copyHeader(byte[] datagram) {
+        //no header, just do nothing
+    }
+
 }
