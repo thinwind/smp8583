@@ -15,6 +15,10 @@
  */
 package win.shangyh.cmnpro.smp8583;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -46,8 +50,76 @@ public class DatagramBodyTest {
         body.setFields(fields);
         byte[] datagram = body.toBytes(6);
         String dgHex = BitUtil.toHexString(datagram);
+        
+        List<Byte> byteList=new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            byteList.add((byte)0x00);
+        }
+        
+        //bitmap
         byte[] bitmap=new byte[16];
-        String expected = "";
+        BitUtil.setPos(bitmap, 2);
+        BitUtil.setPos(bitmap, 32);
+        BitUtil.setPos(bitmap, 37);
+        BitUtil.setPos(bitmap, 61);
+        BitUtil.setPos(bitmap, 91);
+        BitUtil.setPos(bitmap, 101);
+        BitUtil.setPos(bitmap, 117);
+        addAll(byteList,bitmap);
+        
+        //fields
+        //2
+        String card="6226581125000087";
+        for (int i = 0,delta=19-card.length(); i < delta; i++) {
+            card = "0"+card;
+        }
+        byte[] cardBytes=BitUtil.toByteArray(card);
+        addAll(byteList, cardBytes);
+        
+        //32
+        String f32="406251";
+        addAll(byteList, BitUtil.splitInt(f32.length(), 2));
+        addAll(byteList, BitUtil.toByteArray(f32));
+        
+        //37
+        String f37="381469901408";
+        for (int i = 0,delta=12-f37.length(); i < delta; i++) {
+            f37 = f37+" ";
+        }
+        addAll(byteList, BitUtil.toByteArray(f37));
+        
+        //61
+        String f61="CEBV1 111111111       Y";
+        addAll(byteList, BitUtil.splitInt(f61.length(), 3));
+        addAll(byteList, BitUtil.toByteArray(f61));
+        
+        //91
+        String f91="2";
+        addAll(byteList, BitUtil.toByteArray(f91));
+        
+        //101
+        String f101="CARDFILE";
+        addAll(byteList, BitUtil.splitInt(f101.length(), 2));
+        addAll(byteList, BitUtil.toByteArray(f101));
+        
+        //117
+        String f117="00";
+        addAll(byteList, BitUtil.splitInt(f117.length(), 3));
+        addAll(byteList, BitUtil.toByteArray(f117));
+        
+        byte[] target = new byte[byteList.size()];
+        for (int i = 0; i < target.length; i++) {
+            target[i] = byteList.get(i);
+        }
+        String expected = BitUtil.toHexString(target);
+        System.out.println(expected);
+        System.out.println(dgHex);
         assertEquals(expected, dgHex);
+    }
+
+    private void addAll(List<Byte> byteList, byte[] bitmap) {
+        for (byte b : bitmap) {
+            byteList.add(b);
+        }
     }
 }
