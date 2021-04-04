@@ -44,8 +44,9 @@ public class DatagramBodyTest {
 
         DatagramBody body = new DatagramBody();
         body.setFields(fields);
-        byte[] datagram = body.toBytes();
+        byte[] datagram = body.toBytes(6);
         String dgHex = BitUtil.toHexString(datagram);
+        byte[] bitmap=new byte[16];
         String expected = "";
         assertEquals(expected, dgHex);
     }

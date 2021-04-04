@@ -48,6 +48,6 @@ public class Datagram {
     }
 
     public byte[] toBytes() {
-        return body.toBytes();
+        return body.toBytes(MTI_LENGTH+DATAGRAM_LENGTH_FIELD_SIZE);
     }
 }

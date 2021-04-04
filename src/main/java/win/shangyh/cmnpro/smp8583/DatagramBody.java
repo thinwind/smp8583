@@ -140,7 +140,11 @@ public class DatagramBody {
         bitmap = Arrays.copyOfRange(source, offset, bodyOffset);
     }
 
-    public byte[] toBytes() {
+    /**
+     * 所有的域拼接成byte数组，并且头部预留出
+     * MTI和LENGTH的位置
+     */
+    public byte[] toBytes(int prefixSize) {
         byte[] mti=new byte[4];
         int bitmapSize = SINGLE_BITMAP_SIZE * BYTE_LENGTH;
         boolean hasSecondaryBitmap = false;
