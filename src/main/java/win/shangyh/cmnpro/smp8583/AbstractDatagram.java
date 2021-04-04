@@ -41,6 +41,13 @@ public abstract class AbstractDatagram {
 
     protected DatagramBody body;
     
+    /**
+     * 解析报文
+     * 将报文拆分为MTI和DatagramBody
+     * DatagramBody将报文拆分为 BodyField，可以获取各域的byte数组或者ascii表示
+     * 
+     * @param source 报文体
+     */
     public void parse(byte[] source) {
         int headerLength = getHeaderLength();
         mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH_FIELD_SIZE + headerLength, MTI_LENGTH);
@@ -48,8 +55,21 @@ public abstract class AbstractDatagram {
         body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH_FIELD_SIZE + headerLength + MTI_LENGTH);
     }
 
+    /**
+     * 解析header
+     * 在解析报文过程调用，如果不支持header
+     * 不用进行任何操作即可
+     * 
+     * @param source 原始报文体
+     */
     protected abstract void parseHeader(byte[] source);
 
+    /**
+     * 获取header的长度
+     * 可以为0，长度为0时，认为是不支持header
+     * 
+     * @return header的长度
+     */
     public abstract int getHeaderLength();
 
     public byte[] toBytes() {
@@ -67,5 +87,10 @@ public abstract class AbstractDatagram {
         return datagram;
     }
 
+    /**
+     * 将 header 字节copy到最终的报文中
+     * 
+     * @param datagram 最终生成的报文
+     */
     protected abstract void copyHeader(byte[] datagram);
 }
