@@ -124,7 +124,7 @@ public class FieldDefineTest {
         assertFalse(fd.isHasX());
         assertFalse(fd.isHasZ());
         assertEquals(0, fd.getFieldLengthSize());
-        assertEquals(64, fd.getLength());
+        assertEquals(8, fd.getLength());
         assertTrue(fd.isFixed());
     }
 
