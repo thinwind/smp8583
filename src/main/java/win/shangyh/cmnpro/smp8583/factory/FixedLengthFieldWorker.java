@@ -47,6 +47,7 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
         field.setLocation(bodyFieldIdx);
         byte[] fieldDg = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
         field.setOrigin(fieldDg);
+        field.setFieldType(fieldType);
         return field;
     }
 

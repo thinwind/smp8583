@@ -91,17 +91,15 @@ public class DatagramBody {
 
         fields = new BodyField[count(bitmap)];
         //域序号
-        int bodyFieldIdx=0;
         int fieldCursor = 0;
 
         for (int i = 0; i < bitmap.length; i++) {
             byte item = bitmap[i];
             for (int slotIdx = 0; slotIdx < BYTE_SLOTS.length; slotIdx++) {
-                //域位置索引
-                // bodyFieldIdx = i * BYTE_LENGTH + slotIdx + 1;
                 //判断某一域是否存在
                 if ((item & BYTE_SLOTS[slotIdx]) == BYTE_SLOTS[slotIdx]) {
-                    BodyField field = BodyFieldFactory.parseField(source, bodyOffset, bodyFieldIdx);
+                    //域位置索引 i * 8 + slotIdx + 1
+                    BodyField field = BodyFieldFactory.parseField(source, bodyOffset, i * 8 + slotIdx + 1);
                     fields[fieldCursor++] = field;
                     bodyOffset += field.getTotalLength();
                 }

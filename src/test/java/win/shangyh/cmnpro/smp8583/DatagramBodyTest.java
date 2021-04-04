@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -123,6 +124,35 @@ public class DatagramBodyTest {
     private void addAll(List<Byte> byteList, byte[] bitmap) {
         for (byte b : bitmap) {
             byteList.add(b);
+        }
+    }
+    
+    @Test
+    public void testParse(){
+        BodyField[] fields = new BodyField[7];
+        //1100 0000 0000 0000 0000 0000 0000 0001
+        //0000 0000 1000 0000 0000 0000 0000 1000
+        //0000 0000 0000 0000 0000 0000 0010 0000
+        //0000 1000 0000 0000 0000 1000 0000 0000
+        fields[0] = BodyFieldFactory.createBodyField("6226581125000087", 2);
+        fields[1] = BodyFieldFactory.createBodyField("406251", 32);
+        fields[2] = BodyFieldFactory.createBodyField("381469901408", 37);
+        fields[3] = BodyFieldFactory.createBodyField("CEBV1 111111111       Y", 61);
+        fields[4] = BodyFieldFactory.createBodyField("2", 91);
+        fields[5] = BodyFieldFactory.createBodyField("CARDFILE", 101);
+        fields[6] = BodyFieldFactory.createBodyField("00", 117);
+
+        DatagramBody source = new DatagramBody();
+        source.setFields(fields);
+        byte[] datagram = source.toBytes(6);
+        
+        DatagramBody target = DatagramBody.fromBytes(datagram,6);
+        assertEquals(7, target.getFields().length);
+        BodyField[] parsedFields = target.getFields();
+        for (int i = 0; i < parsedFields.length; i++) {
+            assertEquals(fields[i].getLocation(), parsedFields[i].getLocation());
+            assertEquals(fields[i].getFieldType(), parsedFields[i].getFieldType());
+            assertArrayEquals(fields[i].getOrigin(), parsedFields[i].getOrigin());
         }
     }
 }

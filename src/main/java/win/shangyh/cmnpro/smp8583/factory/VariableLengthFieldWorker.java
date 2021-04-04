@@ -46,7 +46,7 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
 
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
-        String lengthStr = BitUtil.toAsciiString(source, bodyOffset, bodyOffset + lengthFieldSize);
+        String lengthStr = BitUtil.toAsciiString(source, bodyOffset, lengthFieldSize);
         int fieldSize = Integer.parseInt(lengthStr);
         if (fieldSize > maxLength - lengthFieldSize) {
             throw new IllegalLengthException(
