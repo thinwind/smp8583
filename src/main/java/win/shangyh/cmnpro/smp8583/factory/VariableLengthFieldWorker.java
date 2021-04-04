@@ -79,7 +79,7 @@ public class VariableLengthFieldWorker implements BodyFieldWorker {
         field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
 
-        byte[] lengthField = BitUtil.splitInt(body.length, lengthFieldSize);
+        byte[] lengthField = BitUtil.splitIntInAscii(body.length, lengthFieldSize);
         byte[] bodyData = new byte[lengthFieldSize + body.length];
         System.arraycopy(lengthField, 0, bodyData, 0, lengthFieldSize);
         System.arraycopy(body, 0, bodyData, lengthFieldSize, body.length);

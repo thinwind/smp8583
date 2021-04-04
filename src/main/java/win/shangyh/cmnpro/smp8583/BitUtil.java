@@ -39,7 +39,7 @@ public final class BitUtil {
      * @param size 要拆分的字节个数
      * @return 拆分后的数组
      */
-    public static byte[] splitInt(int value, int size) {
+    public static byte[] splitIntInAscii(int value, int size) {
         String valStr = String.valueOf(value);
         int delta = size - valStr.length();
         if (delta < 0) {
@@ -88,5 +88,25 @@ public final class BitUtil {
      */
     public static void setPos(byte[] bitmap, int p) {
         bitmap[(p - 1) / 8] = (byte) (bitmap[(p - 1) / 8] | (1 << (7 - ((p - 1) % 8))));
+    }
+
+    /**
+     * 将一个数字拆分成byte数组
+     * 效果最终相当于byte[]展开成一个大的数字
+     * <p>
+     * 计算过程:
+     * 将最低位，赋值给数组的最末尾
+     * 将最高位，赋值给数组的最开头
+     * 
+     * @param val 要拆分的数值
+     * @param cnt 要拆分成字节数组的长度
+     * @return 拆分后的数组
+     */
+    public static byte[] splitIntInBytes(int val, int cnt) {
+        byte[] r = new byte[cnt];
+        for (int i = cnt - 1; i >= 0; i--) {
+            r[i] = (byte) ((val >>> (cnt - 1 - i) * 8) & 0xff);
+        }
+        return r;
     }
 }

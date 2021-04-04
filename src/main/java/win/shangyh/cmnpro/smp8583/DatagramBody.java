@@ -91,7 +91,7 @@ public class DatagramBody {
 
         fields = new BodyField[count(bitmap)];
         //域序号
-        int bodyFieldIdx;
+        int bodyFieldIdx=0;
         int fieldCursor = 0;
 
         for (int i = 0; i < bitmap.length; i++) {
@@ -157,22 +157,24 @@ public class DatagramBody {
 
         if (hasSecondaryBitmap) {
             bitmap = new byte[SINGLE_BITMAP_SIZE * 2];
+            BitUtil.setPos(bitmap,1);
         } else {
             bitmap = new byte[SINGLE_BITMAP_SIZE];
         }
 
         int totalLength = prefixSize + bitmap.length + totalBodyLength;
         byte[] datagram = new byte[totalLength];
-        
-        //copy bitmap
-        System.arraycopy(bitmap, 0, datagram, prefixSize, bitmap.length);
         bodyOffset = prefixSize+bitmap.length;
         
         // copyFields
         for (BodyField field : fields) {
+            BitUtil.setPos(bitmap, field.getLocation());
             System.arraycopy(field.getOrigin(), 0, datagram, bodyOffset, field.getTotalLength());
             bodyOffset += field.getTotalLength();
         }
+        
+        //copy bitmap
+        System.arraycopy(bitmap, 0, datagram, prefixSize, bitmap.length);
         
         return datagram;
     }

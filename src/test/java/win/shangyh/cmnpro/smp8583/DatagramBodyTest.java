@@ -38,6 +38,10 @@ public class DatagramBodyTest {
     @Test
     public void whenToBytesThenContainJustBodyAndBitmap() {
         BodyField[] fields = new BodyField[7];
+        //1100 0000 0000 0000 0000 0000 0000 0001
+        //0000 0000 1000 0000 0000 0000 0000 1000
+        //0000 0000 0000 0000 0000 0000 0010 0000
+        //0000 1000 0000 0000 0000 1000 0000 0000
         fields[0] = BodyFieldFactory.createBodyField("6226581125000087", 2);
         fields[1] = BodyFieldFactory.createBodyField("406251", 32);
         fields[2] = BodyFieldFactory.createBodyField("381469901408", 37);
@@ -58,6 +62,7 @@ public class DatagramBodyTest {
         
         //bitmap
         byte[] bitmap=new byte[16];
+        BitUtil.setPos(bitmap, 1);
         BitUtil.setPos(bitmap, 2);
         BitUtil.setPos(bitmap, 32);
         BitUtil.setPos(bitmap, 37);
@@ -70,15 +75,13 @@ public class DatagramBodyTest {
         //fields
         //2
         String card="6226581125000087";
-        for (int i = 0,delta=19-card.length(); i < delta; i++) {
-            card = "0"+card;
-        }
         byte[] cardBytes=BitUtil.toByteArray(card);
+        addAll(byteList, BitUtil.splitIntInAscii(card.length(), 2));
         addAll(byteList, cardBytes);
         
         //32
         String f32="406251";
-        addAll(byteList, BitUtil.splitInt(f32.length(), 2));
+        addAll(byteList, BitUtil.splitIntInAscii(f32.length(), 2));
         addAll(byteList, BitUtil.toByteArray(f32));
         
         //37
@@ -90,7 +93,7 @@ public class DatagramBodyTest {
         
         //61
         String f61="CEBV1 111111111       Y";
-        addAll(byteList, BitUtil.splitInt(f61.length(), 3));
+        addAll(byteList, BitUtil.splitIntInAscii(f61.length(), 3));
         addAll(byteList, BitUtil.toByteArray(f61));
         
         //91
@@ -99,12 +102,12 @@ public class DatagramBodyTest {
         
         //101
         String f101="CARDFILE";
-        addAll(byteList, BitUtil.splitInt(f101.length(), 2));
+        addAll(byteList, BitUtil.splitIntInAscii(f101.length(), 2));
         addAll(byteList, BitUtil.toByteArray(f101));
         
         //117
         String f117="00";
-        addAll(byteList, BitUtil.splitInt(f117.length(), 3));
+        addAll(byteList, BitUtil.splitIntInAscii(f117.length(), 3));
         addAll(byteList, BitUtil.toByteArray(f117));
         
         byte[] target = new byte[byteList.size()];

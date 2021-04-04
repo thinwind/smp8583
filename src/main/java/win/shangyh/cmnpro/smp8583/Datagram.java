@@ -48,6 +48,14 @@ public class Datagram {
     }
 
     public byte[] toBytes() {
-        return body.toBytes(MTI_LENGTH+DATAGRAM_LENGTH_FIELD_SIZE);
+        byte[] datagram = body.toBytes(DATAGRAM_LENGTH_FIELD_SIZE + MTI_LENGTH);
+        
+        byte[] lengthBytes = BitUtil.splitIntInBytes(datagram.length, DATAGRAM_LENGTH_FIELD_SIZE);
+        System.arraycopy(lengthBytes, 0, datagram, 0, DATAGRAM_LENGTH_FIELD_SIZE);
+        
+        byte[] mtiBytes = BitUtil.toByteArray(mti);
+        System.arraycopy(mtiBytes, 0, datagram, DATAGRAM_LENGTH_FIELD_SIZE, mtiBytes.length);
+        
+        return datagram;
     }
 }
