@@ -81,10 +81,10 @@ public class BitUtilTest {
         byte[] bytes = BitUtil.toByteArray(str);
         assertEquals(asciiInHex, BitUtil.toHexString(bytes));
     }
-    
+
     @Test
     public void testToHexStringWithZeros() {
-        byte[] cus=new byte[5];
+        byte[] cus = new byte[5];
         cus[0] = 0x00;
         cus[1] = 0x01;
         cus[2] = 0x03;
@@ -100,7 +100,7 @@ public class BitUtilTest {
         Set<Integer> pos = new TreeSet<>();
         Random ran = new Random();
         for (int i = 0; i < 20; i++) {
-            int p = ran.nextInt(64)+1;
+            int p = ran.nextInt(64) + 1;
             pos.add(p);
             BitUtil.setPos(bitmap, p);
         }
@@ -112,32 +112,30 @@ public class BitUtilTest {
                 s += "0";
             }
         }
-        System.out.println(s);
         String o = "";
         for (int i = 0; i < bitmap.length; i++) {
             o += fill0To8(Integer.toBinaryString(bitmap[i] & 0xff));
         }
-        System.out.println(o);
         assertEquals(s, o);
     }
-    
+
     @Test
     public void testBitmapSet2() {
         byte[] bitmap = new byte[16];
         Set<Integer> pos = new TreeSet<>();
         Random ran = new Random();
         for (int i = 0; i < 20; i++) {
-            int p = ran.nextInt(64)+1;
+            int p = ran.nextInt(64) + 1;
             pos.add(p);
             BitUtil.setPos(bitmap, p);
         }
-        
+
         for (int i = 0; i < 20; i++) {
-            int p = ran.nextInt(64)+65;
+            int p = ran.nextInt(64) + 65;
             pos.add(p);
             BitUtil.setPos(bitmap, p);
         }
-        
+
         String s = "";
         for (int i = 1; i < 129; i++) {
             if (pos.contains(i)) {
@@ -146,12 +144,10 @@ public class BitUtilTest {
                 s += "0";
             }
         }
-        System.out.println(s);
         String o = "";
         for (int i = 0; i < bitmap.length; i++) {
             o += fill0To8(Integer.toBinaryString(bitmap[i] & 0xff));
         }
-        System.out.println(o);
         assertEquals(s, o);
     }
 
@@ -163,28 +159,38 @@ public class BitUtilTest {
     }
 
     @Test
-    public void splitIntInBytesTest(){
+    public void splitIntInBytesTest() {
         int s = new Random().nextInt(65535);
         String b = Integer.toBinaryString(s);
         byte[] target = new byte[2];
-        target[0] = (byte)Integer.parseInt(b.substring(0,b.length()-8),2);
-        target[1] = (byte)Integer.parseInt(b.substring(b.length()-8,b.length()),2);
-        int t = Integer.parseInt(BitUtil.toHexString(BitUtil.splitIntInBytes(s, 2)),16);
+        target[0] = (byte) Integer.parseInt(b.substring(0, b.length() - 8), 2);
+        target[1] = (byte) Integer.parseInt(b.substring(b.length() - 8, b.length()), 2);
+        int t = Integer.parseInt(BitUtil.toHexString(BitUtil.splitIntInBytes(s, 2)), 16);
         assertArrayEquals(target, BitUtil.splitIntInBytes(s, 2));
         assertEquals(s, t);
     }
-    
+
     @Test
-    public void splitIntInBytesTest4(){
-        int s = new Random().nextInt(Integer.MAX_VALUE/2)+Short.MAX_VALUE;
+    public void splitIntInBytesTest4() {
+        int s = new Random().nextInt(Integer.MAX_VALUE / 2) + Short.MAX_VALUE;
         String b = Integer.toBinaryString(s);
         byte[] target = new byte[4];
-        target[0] = (byte)Integer.parseInt(b.substring(0,b.length()-24),2);
-        target[1] = (byte)Integer.parseInt(b.substring(b.length()-24,b.length()-16),2);
-        target[2] = (byte)Integer.parseInt(b.substring(b.length()-16,b.length()-8),2);
-        target[3] = (byte)Integer.parseInt(b.substring(b.length()-8,b.length()),2);
-        int t = Integer.parseInt(BitUtil.toHexString(BitUtil.splitIntInBytes(s, 4)),16);
+        target[0] = (byte) Integer.parseInt(b.substring(0, b.length() - 24), 2);
+        target[1] = (byte) Integer.parseInt(b.substring(b.length() - 24, b.length() - 16), 2);
+        target[2] = (byte) Integer.parseInt(b.substring(b.length() - 16, b.length() - 8), 2);
+        target[3] = (byte) Integer.parseInt(b.substring(b.length() - 8, b.length()), 2);
+        int t = Integer.parseInt(BitUtil.toHexString(BitUtil.splitIntInBytes(s, 4)), 16);
         assertArrayEquals(target, BitUtil.splitIntInBytes(s, 4));
         assertEquals(s, t);
+    }
+
+    @Test
+    public void joinBytesToIntTest() {
+        for (int i = 0; i < 10000; i++) {
+            int s = new Random().nextInt(65535);
+            byte[] splited = BitUtil.splitIntInBytes(s, 2);
+            int t = BitUtil.joinBytesToUnsignedInt(splited);
+            assertEquals(s, t);
+        }
     }
 }

@@ -109,4 +109,29 @@ public final class BitUtil {
         }
         return r;
     }
+
+    /**
+     * 将bytes合并成一个int数据
+     * 效果相当于在内存中一个连续的字节段，表示的一个实际的整型值
+     * 将开头赋值给高位
+     * 将末尾赋值给低位
+     * 以4个字节为例
+     * bytes[0] bytes[1] bytes[2] bytes[3]
+     * 相当于
+     * bytes[0] 00000000 00000000 00000000
+     * 00000000 bytes[1] 00000000 00000000
+     * 00000000 00000000 bytes[2] 00000000
+     * 00000000 00000000 00000000 bytes[3]
+     * 
+     * @param bytes
+     * @return
+     */
+    public static int joinBytesToUnsignedInt(byte[] bytes) {
+        int r = 0;
+        for (int i = 0, cnt = bytes.length; i < cnt; i++) {
+            int mask = 0xff << ((cnt - i - 1) * 8);
+            r = r | ((bytes[i] << ((cnt - i - 1) * 8)) & mask);
+        }
+        return r;
+    }
 }
