@@ -15,6 +15,7 @@ package win.shangyh.cmnpro.smp8583;
 
 import lombok.Getter;
 import lombok.Setter;
+import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
 
 /**
  *
@@ -95,9 +96,13 @@ public abstract class AbstractDatagram {
 
     public void setMti(String mti) {
         this.mti = BitUtil.toByteArray(mti);
+        if (this.mti.length != MTI_LENGTH)
+            throw new IllegalLengthException("MTI length is not equals to " + MTI_LENGTH);
     }
-    
-    public void setMti(byte[] mti){
+
+    public void setMti(byte[] mti) {
+        if (mti.length != MTI_LENGTH)
+            throw new IllegalLengthException("MTI length is not equals to " + MTI_LENGTH);
         this.mti = mti;
     }
 }
