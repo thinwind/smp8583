@@ -59,7 +59,7 @@ public class DatagramWithAsciiHeaderTest {
         parsedDg.parse(datagram);
         
         assertEquals("192.168.123.123$18080", parsedDg.getHeader());
-        assertEquals("0302", parsedDg.getMti());
+        assertEquals("0302", BitUtil.toAsciiString(parsedDg.getMti()));
         
         byte[] lengthBytes=new byte[2];
         lengthBytes[0] = datagram[0];
