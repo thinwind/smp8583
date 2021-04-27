@@ -31,6 +31,8 @@ public final class BitUtil {
     }
 
     public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
+    
+    public static final Charset GBK_CHARSET = Charset.forName("GBK");
 
     /**
      * 把一个数值使用ASCII码的字节数组表示
@@ -52,12 +54,25 @@ public final class BitUtil {
         return valStr.getBytes(ASCII_CHARSET);
     }
 
+    /**
+     * 将字节转为ASCII字符串
+     * @param data 字节数组
+     * @return ASCII编码的字符串
+     */
     public static String toAsciiString(byte[] data) {
         return new String(data, ASCII_CHARSET);
+    }
+    
+    public static String toGBKString(byte[] data){
+        return new String(data, GBK_CHARSET);
     }
 
     public static String toAsciiString(byte[] data, int start, int length) {
         return new String(data, start, length, ASCII_CHARSET);
+    }
+    
+    public static String toGBKString(byte[] data, int start, int length) {
+        return new String(data, start, length, GBK_CHARSET);
     }
 
     public static String toHexString(byte[] data) {
@@ -133,5 +148,9 @@ public final class BitUtil {
             r = r | ((bytes[i] << ((cnt - i - 1) * 8)) & mask);
         }
         return r;
+    }
+
+    public static byte[] toGBKBytes(String data) {
+        return data.getBytes(GBK_CHARSET);
     }
 }

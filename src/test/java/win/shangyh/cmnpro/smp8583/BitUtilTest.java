@@ -18,7 +18,7 @@ package win.shangyh.cmnpro.smp8583;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
-
+import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -192,5 +192,17 @@ public class BitUtilTest {
             int t = BitUtil.joinBytesToUnsignedInt(splited);
             assertEquals(s, t);
         }
+    }
+    
+    @Test
+    public void testGbkString() throws UnsupportedEncodingException{
+        String ch = "中文";
+        assertEquals("中文", BitUtil.toGBKString(ch.getBytes("GBK")));
+    }
+    
+    @Test
+    public void testGbkBytes() throws UnsupportedEncodingException{
+        String ch = "中文";
+        assertArrayEquals("中文".getBytes("GBK"), BitUtil.toGBKBytes(ch));
     }
 }
