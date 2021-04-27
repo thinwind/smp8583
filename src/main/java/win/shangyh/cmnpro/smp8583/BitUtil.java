@@ -65,20 +65,74 @@ public final class BitUtil {
         return new String(data, ASCII_CHARSET);
     }
     
+    /**
+     * 将字节转为GBK字符串
+     * @param data 字节数组
+     * @return GBK编码的字符串
+     */
     public static String toGBKString(byte[] data){
         return new String(data, GBK_CHARSET);
     }
 
+    /**
+     * 将字节转为ASCII字符串
+     * @param data 字节数组
+     * @param start 要开始编码的字节起始位置
+     * @param length 要进行编码的长度
+     * @return ASCII编码的字符串
+     */
     public static String toAsciiString(byte[] data, int start, int length) {
         return new String(data, start, length, ASCII_CHARSET);
     }
     
+    /**
+     * 将字节转为GBK字符串
+     * @param data 字节数组
+     * @param start 要开始编码的字节起始位置
+     * @param length 要进行编码的长度
+     * @return GBK编码的字符串
+     */
     public static String toGBKString(byte[] data, int start, int length) {
         return new String(data, start, length, GBK_CHARSET);
     }
     
+    /**
+     * 将字节转为UTF-8字符串
+     * @param data 字节数组
+     * @param start 要开始编码的字节起始位置
+     * @param length 要进行编码的长度
+     * @return UTF-8编码的字符串
+     */
     public static String toUtf8String(byte[] data, int start, int length) {
         return new String(data, start, length, UTF8_CHARSET);
+    }
+    
+    /**
+     * 将字符串编码成GBK对应的字节数组
+     * 
+     * @param data GBK字符串
+     * @return GBK编码对应的字节数组
+     */
+    public static byte[] toGBKBytes(String data) {
+        return data.getBytes(GBK_CHARSET);
+    }
+
+    /**
+     * 将字符串编码成UTF8对应的字节数组
+     * @param data UTF8编码的字符串
+     * @return UTF8编码对应的字节数组
+     */
+    public static byte[] toUtf8Bytes(String data) {
+        return data.getBytes(UTF8_CHARSET);
+    }
+
+    /**
+     * 将字符数组编码成UTF8字符串
+     * @param data 字节数组
+     * @return UTF8编码对应的字符串
+     */
+    public static String toUtf8String(byte[] data) {
+        return new String(data,UTF8_CHARSET);
     }
 
     public static String toHexString(byte[] data) {
@@ -90,6 +144,11 @@ public final class BitUtil {
         return builder.toString();
     }
 
+    /**
+     * 将字符串转成ASCII编码的字节数组
+     * @param asciiStr ASCII编码的字符串
+     * @return asciiStr对应的ASCII码字节数组
+     */
     public static byte[] toByteArray(String asciiStr) {
         return asciiStr.getBytes(ASCII_CHARSET);
     }
@@ -154,18 +213,6 @@ public final class BitUtil {
             r = r | ((bytes[i] << ((cnt - i - 1) * 8)) & mask);
         }
         return r;
-    }
-
-    public static byte[] toGBKBytes(String data) {
-        return data.getBytes(GBK_CHARSET);
-    }
-
-    public static byte[] toUtf8Bytes(String data) {
-        return data.getBytes(UTF8_CHARSET);
-    }
-
-    public static Object toUtf8String(byte[] bytes) {
-        return new String(bytes,UTF8_CHARSET);
     }
 
 }
