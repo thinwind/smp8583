@@ -57,7 +57,57 @@ public class DatagramTest {
         Datagram parsedDg = new Datagram();
         parsedDg.parse(datagram);
         
-        assertEquals("0302", parsedDg.getMti());
+        byte[] mtiInBytes = new byte[4];
+        mtiInBytes[0] = '0';
+        mtiInBytes[1] = '3';
+        mtiInBytes[2] = '0';
+        mtiInBytes[3] = '2';
+        assertArrayEquals(mtiInBytes, parsedDg.mti);
+        
+        byte[] lengthBytes=new byte[2];
+        lengthBytes[0] = datagram[0];
+        lengthBytes[1] = datagram[1];
+        
+        assertEquals(datagram.length, BitUtil.joinBytesToUnsignedInt(lengthBytes));
+        
+        DatagramBody target = parsedDg.getBody();
+        assertEquals(7, target.getFields().length);
+        BodyField[] parsedFields = target.getFields();
+        for (int i = 0; i < parsedFields.length; i++) {
+            assertEquals(fields[i].getLocation(), parsedFields[i].getLocation());
+            assertEquals(fields[i].getFieldType(), parsedFields[i].getFieldType());
+            assertArrayEquals(fields[i].getOrigin(), parsedFields[i].getOrigin());
+        }
+        
+        assertArrayEquals(dg.toBytes(), parsedDg.toBytes());
+    }
+    
+    @Test
+    public void whenMtiInBytesThenCopyDirectly(){
+        BodyField[] fields = new BodyField[7];
+        //1100 0000 0000 0000 0000 0000 0000 0001
+        //0000 0000 1000 0000 0000 0000 0000 1000
+        //0000 0000 0000 0000 0000 0000 0010 0000
+        //0000 1000 0000 0000 0000 1000 0000 0000
+        fields[0] = BodyFieldFactory.createBodyField("6226581125000087", 2);
+        fields[1] = BodyFieldFactory.createBodyField("406251", 32);
+        fields[2] = BodyFieldFactory.createBodyField("381469901408", 37);
+        fields[3] = BodyFieldFactory.createBodyField("CEBV1 111111111       Y", 61);
+        fields[4] = BodyFieldFactory.createBodyField("2", 91);
+        fields[5] = BodyFieldFactory.createBodyField("CARDFILE", 101);
+        fields[6] = BodyFieldFactory.createBodyField("00", 117);
+
+        DatagramBody source = new DatagramBody();
+        source.setFields(fields);
+        Datagram dg=new Datagram();
+        dg.setMti(new byte[]{(byte)0xf0,(byte)0xf1,(byte)0xf1,(byte) 0xf0});
+        dg.setBody(source);
+        
+        byte[] datagram = dg.toBytes();
+        Datagram parsedDg = new Datagram();
+        parsedDg.parse(datagram);
+        
+        assertArrayEquals(new byte[]{(byte)0xf0,(byte)0xf1,(byte)0xf1,(byte) 0xf0}, parsedDg.getMti());
         
         byte[] lengthBytes=new byte[2];
         lengthBytes[0] = datagram[0];

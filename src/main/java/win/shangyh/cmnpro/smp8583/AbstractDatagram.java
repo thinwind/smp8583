@@ -1,22 +1,21 @@
-/* 
+/*
  * Copyright 2021 Shang Yehua <niceshang@outlook.com>
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package win.shangyh.cmnpro.smp8583;
 
 import lombok.Getter;
 import lombok.Setter;
+import win.shangyh.cmnpro.smp8583.exception.IllegalLengthException;
 
 /**
  *
@@ -37,10 +36,10 @@ public abstract class AbstractDatagram {
     //mti长度
     public final static int MTI_LENGTH = 4;
 
-    protected String mti;
+    protected byte[] mti;
 
     protected DatagramBody body;
-    
+
     /**
      * 解析报文
      * 将报文拆分为MTI和DatagramBody
@@ -50,9 +49,11 @@ public abstract class AbstractDatagram {
      */
     public void parse(byte[] source) {
         int headerLength = getHeaderLength();
-        mti = BitUtil.toAsciiString(source, DATAGRAM_LENGTH_FIELD_SIZE + headerLength, MTI_LENGTH);
+        mti = new byte[MTI_LENGTH];
+        System.arraycopy(source, DATAGRAM_LENGTH_FIELD_SIZE + headerLength, mti, 0, MTI_LENGTH);
         parseHeader(source);
-        body = DatagramBody.fromBytes(source, DATAGRAM_LENGTH_FIELD_SIZE + headerLength + MTI_LENGTH);
+        body = DatagramBody.fromBytes(source,
+                DATAGRAM_LENGTH_FIELD_SIZE + headerLength + MTI_LENGTH);
     }
 
     /**
@@ -78,11 +79,10 @@ public abstract class AbstractDatagram {
 
         byte[] lengthBytes = BitUtil.splitIntInBytes(datagram.length, DATAGRAM_LENGTH_FIELD_SIZE);
         System.arraycopy(lengthBytes, 0, datagram, 0, DATAGRAM_LENGTH_FIELD_SIZE);
-        
+
         copyHeader(datagram);
 
-        byte[] mtiBytes = BitUtil.toByteArray(mti);
-        System.arraycopy(mtiBytes, 0, datagram, DATAGRAM_LENGTH_FIELD_SIZE+headerLength, mtiBytes.length);
+        System.arraycopy(mti, 0, datagram, DATAGRAM_LENGTH_FIELD_SIZE + headerLength, mti.length);
 
         return datagram;
     }
@@ -93,4 +93,16 @@ public abstract class AbstractDatagram {
      * @param datagram 最终生成的报文
      */
     protected abstract void copyHeader(byte[] datagram);
+
+    public void setMti(String mti) {
+        this.mti = BitUtil.toByteArray(mti);
+        if (this.mti.length != MTI_LENGTH)
+            throw new IllegalLengthException("MTI length is not equals to " + MTI_LENGTH);
+    }
+
+    public void setMti(byte[] mti) {
+        if (mti.length != MTI_LENGTH)
+            throw new IllegalLengthException("MTI length is not equals to " + MTI_LENGTH);
+        this.mti = mti;
+    }
 }

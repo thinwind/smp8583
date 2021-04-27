@@ -33,6 +33,17 @@ import org.junit.Test;
  *
  */
 public class BitUtilTest {
+    
+    @Test
+    public void testToByteArray(){
+        String mti="0302";
+        byte[] mtiInBytes = new byte[4];
+        mtiInBytes[0] = '0';
+        mtiInBytes[1] = '3';
+        mtiInBytes[2] = '0';
+        mtiInBytes[3] = '2';
+        assertArrayEquals(mtiInBytes, BitUtil.toByteArray(mti));
+    }
 
     @Test(expected = RuntimeException.class)
     public void whenSizeLargerThanExpectedThenExcept() {
