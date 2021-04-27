@@ -33,6 +33,8 @@ public final class BitUtil {
     public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
     
     public static final Charset GBK_CHARSET = Charset.forName("GBK");
+    
+    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     /**
      * 把一个数值使用ASCII码的字节数组表示
@@ -73,6 +75,10 @@ public final class BitUtil {
     
     public static String toGBKString(byte[] data, int start, int length) {
         return new String(data, start, length, GBK_CHARSET);
+    }
+    
+    public static String toUtf8String(byte[] data, int start, int length) {
+        return new String(data, start, length, UTF8_CHARSET);
     }
 
     public static String toHexString(byte[] data) {
@@ -153,4 +159,13 @@ public final class BitUtil {
     public static byte[] toGBKBytes(String data) {
         return data.getBytes(GBK_CHARSET);
     }
+
+    public static byte[] toUtf8Bytes(String data) {
+        return data.getBytes(UTF8_CHARSET);
+    }
+
+    public static Object toUtf8String(byte[] bytes) {
+        return new String(bytes,UTF8_CHARSET);
+    }
+
 }

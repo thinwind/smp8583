@@ -205,4 +205,24 @@ public class BitUtilTest {
         String ch = "中文";
         assertArrayEquals("中文".getBytes("GBK"), BitUtil.toGBKBytes(ch));
     }
+    
+    @Test
+    public void testUtf8Encode() throws UnsupportedEncodingException{
+        String ch = "中文";
+        assertArrayEquals("中文".getBytes("UTF-8"), BitUtil.toUtf8Bytes(ch));
+    }
+    
+    @Test
+    public void testUtf8Decode() throws UnsupportedEncodingException{
+        String ch = "中文";
+        assertEquals("中文", BitUtil.toUtf8String(ch.getBytes("UTF-8")));
+    }
+    
+    @Test
+    public void testUtf8Decode2() throws UnsupportedEncodingException{
+        String ch = "中文";
+        byte[] array = new byte[10];
+        System.arraycopy(ch.getBytes("UTF-8"), 0, array, 3, 6);
+        assertEquals("中文", BitUtil.toUtf8String(array,3,6));
+    }
 }
