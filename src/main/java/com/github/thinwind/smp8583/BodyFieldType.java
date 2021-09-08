@@ -84,6 +84,17 @@ public enum BodyFieldType {
             // lengthInDefination/8
             return lengthInDefination >>> 3;
         }
+        
+        @Override
+        public byte[] normalize(byte[] origin, int length) {
+            if (origin.length > length) {
+                throw new IllegalLengthException("The input byte array has a larger length than expected.");
+            }
+            if (origin.length == length) {
+                return origin;
+            }
+            throw new UnsupportedFieldOprationException("The field cannot be normalized");
+        }
     };
 
     public byte[] normalize(byte[] origin, int length) {

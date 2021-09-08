@@ -31,9 +31,9 @@ public final class BitUtil {
     }
 
     public static final Charset ASCII_CHARSET = Charset.forName("ASCII");
-    
+
     public static final Charset GBK_CHARSET = Charset.forName("GBK");
-    
+
     public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     /**
@@ -64,13 +64,13 @@ public final class BitUtil {
     public static String toAsciiString(byte[] data) {
         return new String(data, ASCII_CHARSET);
     }
-    
+
     /**
      * 将字节转为GBK字符串
      * @param data 字节数组
      * @return GBK编码的字符串
      */
-    public static String toGBKString(byte[] data){
+    public static String toGBKString(byte[] data) {
         return new String(data, GBK_CHARSET);
     }
 
@@ -84,7 +84,7 @@ public final class BitUtil {
     public static String toAsciiString(byte[] data, int start, int length) {
         return new String(data, start, length, ASCII_CHARSET);
     }
-    
+
     /**
      * 将字节转为GBK字符串
      * @param data 字节数组
@@ -95,7 +95,7 @@ public final class BitUtil {
     public static String toGBKString(byte[] data, int start, int length) {
         return new String(data, start, length, GBK_CHARSET);
     }
-    
+
     /**
      * 将字节转为UTF-8字符串
      * @param data 字节数组
@@ -106,7 +106,7 @@ public final class BitUtil {
     public static String toUtf8String(byte[] data, int start, int length) {
         return new String(data, start, length, UTF8_CHARSET);
     }
-    
+
     /**
      * 将字符串编码成GBK对应的字节数组
      * 
@@ -132,7 +132,7 @@ public final class BitUtil {
      * @return UTF8编码对应的字符串
      */
     public static String toUtf8String(byte[] data) {
-        return new String(data,UTF8_CHARSET);
+        return new String(data, UTF8_CHARSET);
     }
 
     public static String toHexString(byte[] data) {
@@ -168,6 +168,16 @@ public final class BitUtil {
      */
     public static void setPos(byte[] bitmap, int p) {
         bitmap[(p - 1) / 8] = (byte) (bitmap[(p - 1) / 8] | (1 << (7 - ((p - 1) % 8))));
+    }
+
+    /**
+     * 设置bitmap某一位置存在
+     * @param bytes 字节序列
+     * @param start bitmap的开始位置
+     * @param p 要设置的域，从1开始计数
+     */
+    public static void setPos(byte[] bytes, int start, int p) {
+        bytes[start + (p - 1) / 8] = (byte) (bytes[start + (p - 1) / 8] | (1 << (7 - ((p - 1) % 8))));
     }
 
     /**
@@ -215,4 +225,19 @@ public final class BitUtil {
         return r;
     }
 
+    /**
+     * 将一个byte转为hex表示的字符串
+     * 
+     * 与Integer#toHexString不同，此方法不会省去前缀的0
+     * @param b 要转换的byte
+     * @return 2位的16进制全大写字符串
+     */
+    public static String byte2hex(byte b) {
+        String hex = Integer.toHexString(b & 0xff);
+        if (hex.length() < 2) {
+            return "0" + hex.toUpperCase();
+        } else {
+            return hex.toUpperCase();
+        }
+    }
 }

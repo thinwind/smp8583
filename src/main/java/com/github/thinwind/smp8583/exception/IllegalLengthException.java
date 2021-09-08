@@ -24,15 +24,12 @@ package com.github.thinwind.smp8583.exception;
  *
  */
 public class IllegalLengthException extends RuntimeException {
-    
-    private static final long serialVersionUID = 7759125633630841970L;
-
     /**
      * Constructs an <code>IllegalLengthException</code> with no
      * detail message.
      */
     public IllegalLengthException() {
-        super();
+        this("The field value is larger than defination. Please check the field bytes or the defination.");
     }
 
     /**
@@ -83,4 +80,5 @@ public class IllegalLengthException extends RuntimeException {
         super(cause);
     }
 
+    private static final long serialVersionUID = -5365630128856068164L;
 }

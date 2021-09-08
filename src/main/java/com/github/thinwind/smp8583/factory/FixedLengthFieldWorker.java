@@ -16,6 +16,7 @@
 package com.github.thinwind.smp8583.factory;
 
 import java.util.Arrays;
+
 import com.github.thinwind.smp8583.BitUtil;
 import com.github.thinwind.smp8583.BodyField;
 import com.github.thinwind.smp8583.BodyFieldType;
@@ -34,7 +35,7 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
     protected final int length;
 
     private final BodyFieldType fieldType;
-    
+
     public FixedLengthFieldWorker(int length, BodyFieldType fieldType) {
         this.length = length;
         this.fieldType = fieldType;
@@ -42,19 +43,32 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
 
     @Override
     public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
+        byte[] fieldDg = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
+
+        return internalParse(bodyFieldIdx, fieldDg);
+    }
+
+    private BodyField internalParse(int bodyFieldIdx, byte[] fieldDg) {
         BodyField field = new BodyField();
         field.setLocation(bodyFieldIdx);
-        byte[] fieldDg = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
         field.setOrigin(fieldDg);
         field.setFieldType(fieldType);
+        field.setLengthFieldSize(0);
         return field;
     }
 
     @Override
-    public BodyField createField(String ascii, int bodyFieldIdx) {
-        return createField(BitUtil.toByteArray(ascii), bodyFieldIdx);
+    public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx, BytesDecoder decoder) {
+        byte[] inputBytes = Arrays.copyOfRange(source, bodyOffset, bodyOffset + length);
+        byte[] fieldDg = BitUtil.toGBKBytes(decoder.decode(inputBytes));
+        
+        return internalParse(bodyFieldIdx,fieldDg);
     }
 
+    @Override
+    public BodyField createField(String text, int bodyFieldIdx) {
+        return createField(BitUtil.toGBKBytes(text), bodyFieldIdx);
+    }
 
     @Override
     public BodyField createField(byte[] data, int bodyFieldIdx) {
@@ -67,8 +81,19 @@ public class FixedLengthFieldWorker implements BodyFieldWorker {
         field.setLocation(bodyFieldIdx);
         field.setFieldType(fieldType);
         field.setOrigin(fieldType.normalize(data, length));
-
+        field.setLengthFieldSize(0);
         return field;
+    }
+
+    @Override
+    public BodyField createField(String text, int bodyFieldIdx, boolean valueToEbcdic, BytesEncoder encoder) {
+        byte[] body;
+        if (valueToEbcdic) {
+            body = encoder.encode(text);
+        } else {
+            body = BitUtil.toGBKBytes(text);
+        }
+        return createField(body, bodyFieldIdx);
     }
 
 }

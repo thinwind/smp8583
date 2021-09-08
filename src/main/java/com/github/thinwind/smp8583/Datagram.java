@@ -15,6 +15,8 @@
  */
 package com.github.thinwind.smp8583;
 
+import com.github.thinwind.smp8583.factory.BytesDecoder;
+
 /**
  *
  * 8583报文对象
@@ -28,7 +30,12 @@ public class Datagram extends AbstractDatagram {
 
     @Override
     protected void parseHeader(byte[] source) {
-        //just do nothin
+        //just do nothing
+    }
+    
+    @Override
+    protected void parseHeader(byte[] source, BytesDecoder decoder) {
+        //just do nothing
     }
 
     @Override
@@ -40,6 +47,17 @@ public class Datagram extends AbstractDatagram {
     @Override
     protected void copyHeader(byte[] datagram) {
         //no header, just do nothing
+    }
+
+    @Override
+    protected void setHeader(byte[] header) {
+        //no header, just do nothing
+    }
+
+    @Override
+    protected byte[] getHeader() {
+        //no header, just return nothing
+        return null;
     }
 
 }

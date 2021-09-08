@@ -15,8 +15,8 @@
  */
 package com.github.thinwind.smp8583;
 
-import com.github.thinwind.smp8583.exception.IllegalLengthException;
-import lombok.Getter;
+import com.github.thinwind.smp8583.exception.IllegalHeaderOrMtiException;
+import com.github.thinwind.smp8583.factory.BytesDecoder;
 
 /**
  *
@@ -28,10 +28,18 @@ import lombok.Getter;
  */
 public class DatagramWithAsciiHeader extends AbstractDatagram {
 
-    private final int headerLength;
+    /**
+     * 与CONNEX通信header
+     */
+    public static final int CONNEX_HEADER_LENGTH = 21;
 
-    @Getter
+    protected final int headerLength;
+
     private String header;
+
+    public static DatagramWithAsciiHeader newConnexDatagram() {
+        return new DatagramWithAsciiHeader(CONNEX_HEADER_LENGTH);
+    }
 
     @Override
     protected void parseHeader(byte[] source) {
@@ -42,10 +50,10 @@ public class DatagramWithAsciiHeader extends AbstractDatagram {
     public int getHeaderLength() {
         return headerLength;
     }
-    
-    public void addHeader(String header){
-        if(header.length() > headerLength){
-            throw new IllegalLengthException("Header length is larger than expected");
+
+    public void setHeader(String header) {
+        if (BitUtil.toByteArray(header).length > headerLength) {
+            throw new IllegalHeaderOrMtiException("Header length is larger than expected");
         }
         this.header = header;
     }
@@ -58,6 +66,27 @@ public class DatagramWithAsciiHeader extends AbstractDatagram {
 
     public DatagramWithAsciiHeader(int headerLength) {
         this.headerLength = headerLength;
+    }
+
+    @Override
+    protected void parseHeader(byte[] source, BytesDecoder decoder) {
+        byte[] headerBytes = new byte[headerLength];
+        System.arraycopy(source, DATAGRAM_LENGTH_FIELD_SIZE, headerBytes, 0, headerLength);
+        header = decoder.decode(headerBytes);
+    }
+
+    @Override
+    protected void setHeader(byte[] header) {
+        this.header = BitUtil.toAsciiString(header);
+    }
+
+    @Override
+    protected byte[] getHeader() {
+        return BitUtil.toByteArray(header);
+    }
+    
+    public String getHeaderStr(){
+        return header;
     }
 
 }

@@ -15,12 +15,12 @@
  */
 package com.github.thinwind.smp8583.factory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import java.io.IOException;
-import java.io.InputStream;
 import com.github.thinwind.smp8583.BodyField;
 
 /**
@@ -54,9 +54,13 @@ public class BodyFieldFactory {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx) {
         return INDEFATIGABLE_STAFF[bodyFieldIdx - 1].parseField(source, bodyOffset, bodyFieldIdx);
+    }
+
+    public static BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx, BytesDecoder decoder) {
+        return INDEFATIGABLE_STAFF[bodyFieldIdx - 1].parseField(source, bodyOffset, bodyFieldIdx, decoder);
     }
 
     //只在工厂建厂时招募一次
@@ -74,10 +78,10 @@ public class BodyFieldFactory {
                 String value = fieldListProp.getProperty(keystr).trim();
                 if (value.isEmpty()) {
                     //空岗位，加个冒名领工资的
-                    INDEFATIGABLE_STAFF[idx-1] = FakeWorker.INSTANCE;
+                    INDEFATIGABLE_STAFF[idx - 1] = FakeWorker.INSTANCE;
                 } else {
                     FieldDefine define = new FieldDefine(value);
-                    INDEFATIGABLE_STAFF[idx-1] = trainWorker(define, classRoom);
+                    INDEFATIGABLE_STAFF[idx - 1] = trainWorker(define, classRoom);
                 }
             }
         }
@@ -96,7 +100,15 @@ public class BodyFieldFactory {
     }
 
     public static BodyField createBodyField(String field, int loc) {
-        return INDEFATIGABLE_STAFF[loc-1].createField(field, loc);
+        return INDEFATIGABLE_STAFF[loc - 1].createField(field, loc);
     }
-    
+
+    public static BodyField createBodyField(byte[] field, int loc) {
+        return INDEFATIGABLE_STAFF[loc - 1].createField(field, loc);
+    }
+
+    public static BodyField createBodyField(String field, int loc, boolean fieldInEbcdic, BytesEncoder convertor) {
+        return INDEFATIGABLE_STAFF[loc - 1].createField(field, loc, fieldInEbcdic, convertor);
+    }
+
 }

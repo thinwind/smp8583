@@ -49,5 +49,17 @@ public class FakeWorker implements BodyFieldWorker{
         //Oops! You get the wrong guy, I just do nothing but complains.
         throw new UnsupportedFieldException(bodyFieldIdx);
     }
+
+    @Override
+    public BodyField createField(String text, int bodyFieldIdx, boolean valueToEbcdic, BytesEncoder encoder) {
+        //Oops! You get the wrong guy, I just do nothing but complains.
+        throw new UnsupportedFieldException(bodyFieldIdx);
+    }
+
+    @Override
+    public BodyField parseField(byte[] source, int bodyOffset, int bodyFieldIdx, BytesDecoder decoder) {
+        //Oops! You get the wrong guy, I just do nothing but complains.
+        throw new UnsupportedFieldException(bodyFieldIdx);
+    }
     
 }

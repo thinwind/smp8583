@@ -48,7 +48,7 @@ public class DatagramWithAsciiHeaderTest {
         DatagramBody source = new DatagramBody();
         source.setFields(fields);
         DatagramWithAsciiHeader dg=new DatagramWithAsciiHeader(21);
-        dg.addHeader("192.168.123.123$18080");
+        dg.setHeader("192.168.123.123$18080");
         dg.setMti("0302");
         dg.setBody(source);
         
@@ -56,7 +56,7 @@ public class DatagramWithAsciiHeaderTest {
         DatagramWithAsciiHeader parsedDg = new DatagramWithAsciiHeader(21);
         parsedDg.parse(datagram);
         
-        assertEquals("192.168.123.123$18080", parsedDg.getHeader());
+        assertEquals("192.168.123.123$18080", parsedDg.getHeaderStr());
         assertEquals("0302", BitUtil.toAsciiString(parsedDg.getMti()));
         
         byte[] lengthBytes=new byte[2];

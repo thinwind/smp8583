@@ -1,49 +1,24 @@
-/* 
- * Copyright 2021 Shang Yehua
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.github.thinwind.smp8583.exception;
 
-/**
- *
- * 不支持的域操作异常
- *
- * @author Shang Yehua <niceshang@outlook.com>
- * @since 2021-02-04  10:23
- *
- */
-public class UnsupportedFieldOprationException extends RuntimeException {
-    
-    public UnsupportedFieldOprationException(int fieldIdx){
-        this(String.format("Unsupported Field: [ %d ]", fieldIdx));
-    }
-    
+public class IllegalHeaderOrMtiException extends RuntimeException {
+
+    private static final long serialVersionUID = -2941739445977445701L;
+
     /**
-     * Constructs an <code>UnsupportedFieldOprationException</code> with no
+     * Constructs an <code>IllegalHeaderOrMtiException</code> with no
      * detail message.
      */
-    public UnsupportedFieldOprationException() {
-        super();
+    public IllegalHeaderOrMtiException() {
+        this("Header or mti is illegal, usally is over lang.");
     }
 
     /**
-     * Constructs an <code>UnsupportedFieldOprationException</code> with the
+     * Constructs an <code>IllegalHeaderOrMtiException</code> with the
      * specified detail message.
      *
      * @param   s   the detail message.
      */
-    public UnsupportedFieldOprationException(String s) {
+    public IllegalHeaderOrMtiException(String s) {
         super(s);
     }
 
@@ -63,7 +38,7 @@ public class UnsupportedFieldOprationException extends RuntimeException {
      *         unknown.)
      * @since 1.5
      */
-    public UnsupportedFieldOprationException(String message, Throwable cause) {
+    public IllegalHeaderOrMtiException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -81,9 +56,8 @@ public class UnsupportedFieldOprationException extends RuntimeException {
      *         unknown.)
      * @since  1.5
      */
-    public UnsupportedFieldOprationException(Throwable cause) {
+    public IllegalHeaderOrMtiException(Throwable cause) {
         super(cause);
     }
 
-    private static final long serialVersionUID = -5365630128856068164L;
 }

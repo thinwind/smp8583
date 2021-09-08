@@ -17,8 +17,10 @@ package com.github.thinwind.smp8583.factory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.github.thinwind.smp8583.BodyFieldType;
 import com.github.thinwind.smp8583.exception.UnsupportedFieldException;
+
 import lombok.Getter;
 
 /**

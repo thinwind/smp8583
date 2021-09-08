@@ -89,7 +89,7 @@ public class BitUtilTest {
         String asciiInHex = "20212324303132334041425e";
         String str = " !#$0123@AB^";
         byte[] bytes = BitUtil.toByteArray(str);
-        assertEquals(asciiInHex, BitUtil.toHexString(bytes));
+        assertEquals(asciiInHex.toLowerCase(), BitUtil.toHexString(bytes));
     }
 
     @Test

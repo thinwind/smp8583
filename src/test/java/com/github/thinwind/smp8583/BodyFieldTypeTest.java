@@ -65,16 +65,16 @@ public class BodyFieldTypeTest {
         assertTrue(nums == BodyFieldType.NUMBER.normalize(nums,3));
     }
     
-    @Test(expected = UnsupportedFieldOprationException.class)
-    public void whenBinaryThenCannotNormalize(){
-        byte[] nums=new byte[4];
-        nums[0] = (byte)'1';
-        nums[1] = (byte)'2';
-        nums[2] = (byte)'3';
-        nums[3] = (byte)'4';
+    // @Test(expected = UnsupportedFieldOprationException.class)
+    // public void whenBinaryThenCannotNormalize(){
+    //     byte[] nums=new byte[4];
+    //     nums[0] = (byte)'1';
+    //     nums[1] = (byte)'2';
+    //     nums[2] = (byte)'3';
+    //     nums[3] = (byte)'4';
         
-        BodyFieldType.BINARY.normalize(nums,4);
-    }
+    //     BodyFieldType.BINARY.normalize(nums,4);
+    // }
     
     @Test
     public void whenCharAndLessCharThenPaddingRightWithBlank(){
